@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Régua de Recuperação no WhatsApp</title>
-<meta name="description" content="Proposta da fase 1: automação de WhatsApp para os cinco produtos da DUO na The Members.">
-<meta property="og:title" content="Proposta · Régua de WhatsApp para a DUO">
-<meta property="og:description" content="Cinco fluxos automáticos ligados ao checkout da The Members. Fase 1, preço fechado.">
+<meta name="description" content="Proposta para a DUO: recuperação de vendas no WhatsApp para os checkouts da Jeruza Mattos e do Pek Manzano na The Members, com planos de suporte mensal.">
+<meta property="og:title" content="Proposta · Régua de WhatsApp e suporte para a DUO">
+<meta property="og:description" content="Fase 1 com preço fechado e planos mensais de suporte e de TI.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Hanken+Grotesk:wght@400;500;600&display=swap">
@@ -56,6 +56,8 @@ h2 { font-size: clamp(2rem, 4.2vw, 3.2rem); }
 h3 { font-size: 1.45rem; font-weight: 500; line-height: 1.15; letter-spacing: -.01em; }
 .wrap { max-width: 1120px; margin: 0 auto; }
 .read { max-width: 62ch; color: var(--muted); font-size: 1.05rem; }
+.read a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--msg); text-underline-offset: 3px; }
+.read a:hover { color: var(--msg); }
 :focus-visible { outline: 2px solid var(--msg); outline-offset: 3px; }
 
 /* Rótulos pequenos: um estilo só para a página inteira */
@@ -227,6 +229,48 @@ h3 { font-size: 1.45rem; font-weight: 500; line-height: 1.15; letter-spacing: -.
 .next li { counter-increment: s; display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 16px; padding-block: 18px; border-bottom: 1px solid var(--line); align-items: baseline; font-size: 1.05rem; }
 .next li::before { content: counter(s, decimal-leading-zero); font-family: var(--serif); font-style: italic; font-size: 1.15rem; color: var(--msg); }
 
+/* Entendimento e produtos */
+.prods { font-size: .86rem; color: var(--dim); }
+.flow-name .prods { margin-top: 2px; }
+
+/* Planos mensais: escada de suporte */
+.plans { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; align-items: stretch; }
+.plan { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; display: flex; flex-direction: column; gap: 12px; }
+.plan.rec { border: 1.5px solid var(--msg); }
+.plan h3 { font-size: 1.25rem; }
+.plan .hrs { font-size: .84rem; color: var(--dim); }
+.plan .from { font-size: .82rem; font-weight: 600; color: var(--ink); }
+.plan ul, .big-plan ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: .92rem; color: var(--muted); }
+.plan li, .big-plan ul li { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 8px; }
+.plan li::before, .big-plan ul li::before { content: ""; width: 7px; height: 7px; margin-top: 9px; border-radius: 50%; background: var(--msg); }
+.plan .sla { font-size: .84rem; color: var(--dim); border-top: 1px solid var(--line); padding-top: 10px; margin-top: auto; }
+.plan-notes { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: .86rem; color: var(--dim); }
+
+/* Parceria de TI: cartão escuro, de propósito o único da página */
+.big-plan { background: var(--ink); color: #F3EFE8; border-radius: var(--r); padding: 32px; display: grid; gap: 28px; }
+.big-plan .bp-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; }
+.big-plan h3 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 400; }
+.big-plan .bp-pitch { color: #CFC8BC; margin-top: 8px; max-width: 46ch; }
+.big-plan .price { color: #FFFFFF; text-align: right; }
+.big-plan .price small { color: #CFC8BC; }
+.big-plan .bp-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 40px; }
+.big-plan ul { color: #E4DED3; font-size: .96rem; }
+.big-plan ul li::before { background: #8FD3B4; }
+.big-plan .bp-from { font-size: .84rem; font-weight: 600; color: #FFFFFF; }
+.roadmap { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid rgba(243, 239, 232, .18); }
+.roadmap li { padding: 18px 20px 4px 0; display: grid; gap: 6px; align-content: start; }
+.roadmap li + li { padding-left: 20px; border-left: 1px solid rgba(243, 239, 232, .18); }
+.roadmap b { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.15rem; color: #8FD3B4; }
+.roadmap p { font-size: .92rem; color: #E4DED3; }
+.big-plan .bp-note { font-size: .84rem; color: #B9B1A4; }
+
+/* Resumo do investimento */
+.sum { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.sum div { padding: 24px 24px 24px 0; display: grid; gap: 8px; align-content: start; }
+.sum div + div { padding-left: 24px; border-left: 1px solid var(--line); }
+.sum dt { font-family: var(--body); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; font-size: .64rem; color: var(--dim); }
+.sum dd { margin: 0; }
+
 .credits { padding-block: 96px 120px; border-top: 1px solid var(--line); display: grid; gap: 32px; justify-items: center; text-align: center; }
 .credits dl { margin: 0; display: grid; gap: 14px; }
 .credits dt { font-size: .64rem; color: var(--dim); }
@@ -240,8 +284,16 @@ h3 { font-size: 1.45rem; font-weight: 500; line-height: 1.15; letter-spacing: -.
 @media (min-width: 900px) and (min-height: 620px) {
   .stage { min-height: 100vh; align-content: center; padding-block: 72px 24px; }
 }
+@media (max-width: 1060px) {
+  .plans { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 899px) {
   .hero-row, .stage-top, .flow, .split, .final, .tools { grid-template-columns: minmax(0, 1fr); }
+  .big-plan .bp-head, .big-plan .bp-cols, .roadmap, .sum { grid-template-columns: minmax(0, 1fr); }
+  .big-plan .price { text-align: left; }
+  .roadmap li, .roadmap li + li { padding: 16px 0 6px; border-left: 0; border-top: 1px solid rgba(243, 239, 232, .18); }
+  .sum div, .sum div + div { padding: 20px 0; border-left: 0; }
+  .sum div + div { border-top: 1px solid var(--line); }
   .flow { gap: 18px; }
   .rules { grid-template-columns: minmax(0, 1fr); }
   .rules li, .rules li:nth-child(even) { padding: 22px 0; border-right: 0; }
@@ -261,6 +313,8 @@ h3 { font-size: 1.45rem; font-weight: 500; line-height: 1.15; letter-spacing: -.
   .slate-grid div:nth-child(6) { border-left: 1px solid var(--line); }
   .beats li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .callout { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .plans { grid-template-columns: minmax(0, 1fr); }
+  .big-plan { padding: 24px 20px; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; }
@@ -271,28 +325,28 @@ h3 { font-size: 1.45rem; font-weight: 500; line-height: 1.15; letter-spacing: -.
 
 <div class="hud" aria-hidden="true">
   <span><b>DUO</b>&nbsp;×&nbsp;Vinicius Gomes</span>
-  <span><span class="who">Proposta · </span>fase 1</span>
+  <span><span class="who">Proposta · </span>régua e suporte</span>
   <span class="progress"><i id="progress"></i></span>
 </div>
 
 <main class="wrap">
 
   <header class="hero">
-    <p class="eyebrow" data-hero-fade>Proposta · Fase 1 · para DUO cose creative</p>
+    <p class="eyebrow" data-hero-fade>Proposta · para DUO cose creative · Jeruza Mattos e Pek Manzano</p>
     <h1><span class="l1" data-split>Quem quase comprou recebe a mensagem certa.</span> <span class="l2" data-split>Quem comprou, para de receber.</span></h1>
     <div class="hero-row">
       <div class="hero-copy" data-hero-fade>
-        <p>Automação de WhatsApp para os cinco produtos na The Members: carrinho abandonado, Pix e boleto pendentes, cartão recusado e boas-vindas.</p>
-        <span class="scroll-hint">Role para ver a régua funcionando</span>
+        <p>Recuperação de vendas no WhatsApp para os 11 checkouts da Jeruza e do Pek na The Members, e alguém cuidando disso todo mês, sem dar trabalho para vocês.</p>
+        <span class="scroll-hint">Role para ver a proposta</span>
       </div>
       <div class="slate" data-hero-fade>
         <dl class="slate-grid">
-          <div><dt>Projeto</dt><dd>Régua de WhatsApp<small>fase 1</small></dd></div>
-          <div><dt>Cliente</dt><dd>DUO<small>cose creative</small></dd></div>
-          <div><dt>Data</dt><dd>13/10/2026<small>proposta</small></dd></div>
-          <div><dt>Investimento</dt><dd>R$ 700<small>preço fechado</small></dd></div>
-          <div><dt>Escopo</dt><dd>5 produtos<small>até 5 fluxos, mesmo valor</small></dd></div>
-          <div><dt>Prazo</dt><dd>2 semanas<small>após acessos e copies</small></dd></div>
+          <div><dt>Projeto</dt><dd>Régua e suporte<small>WhatsApp e tecnologia</small></dd></div>
+          <div><dt>Para</dt><dd>Jeruza e Pek<small>via DUO cose creative</small></dd></div>
+          <div><dt>Data</dt><dd>13/10/2026<small>depois da nossa call</small></dd></div>
+          <div><dt>Fase 1</dt><dd>R$ 700<small>pago uma vez</small></dd></div>
+          <div><dt>Suporte</dt><dd>R$ 250 a 1.000<small>por mês, à escolha</small></dd></div>
+          <div><dt>Checkouts</dt><dd>11<small>numa conta só</small></dd></div>
         </dl>
       </div>
     </div>
@@ -300,8 +354,36 @@ h3 { font-size: 1.45rem; font-weight: 500; line-height: 1.15; letter-spacing: -.
 
   <section class="scene" aria-labelledby="c1">
     <div class="scene-head">
-      <p class="scene-label"><span class="num">01</span>Como funciona</p>
-      <h2 id="c1">Uma régua de mensagens é uma timeline de edição</h2>
+      <p class="scene-label"><span class="num">01</span>O que entendi da call</p>
+      <h2 id="c1">Começar rápido, pelo que já está vendendo</h2>
+    </div>
+    <ul class="checks" data-reveal>
+      <li>A prioridade é o carrinho abandonado, começando pelo Desafio Seca Barriga, que está em lançamento: R$ 59 até 15/10 e início em 19/10.</li>
+      <li>Os fluxos que mostrei servem para todos os produtos. São 11 checkouts na mesma conta da The Members, então um conjunto de avisos cobre tudo.</li>
+      <li>As mensagens ainda não existem. Eu escrevo o rascunho de cada uma e vocês aprovam.</li>
+      <li>Vocês querem saber se dá para fazer pela própria The Members. Eu confiro no painel no primeiro dia, antes de qualquer assinatura.</li>
+      <li>Depois, vocês querem alguém que cuide disso todo mês, sem dor de cabeça, e agentes de IA no atendimento.</li>
+    </ul>
+  </section>
+
+  <section class="scene" aria-labelledby="c2">
+    <div class="scene-head">
+      <p class="scene-label"><span class="num">02</span>Antes de começar</p>
+      <h2 id="c2">Já encontrei 4 ajustes nas páginas</h2>
+      <p class="read">Olhando os produtos para montar esta proposta, achei quatro detalhes que valem corrigir logo. É esse tipo de atenção que entra no suporte mensal.</p>
+    </div>
+    <ul class="rules">
+      <li data-reveal><h3>Data errada no Desafio</h3><p>O contador do checkout diz “essa oferta acaba no dia 15/09”, mas a oferta vai até 15/10. Está no ar agora, no meio do lançamento.</p></li>
+      <li data-reveal><h3>Nome no checkout do Desafio</h3><p>A descrição escreve “Jeruza Matos”, com um t só.</p></li>
+      <li data-reveal><h3>Botão do PM Power</h3><p>O botão “Quero treino personalizado” leva para o checkout do Treino Iniciante, de R$ 97, e não para a consultoria.</p></li>
+      <li data-reveal><h3>WhatsApp da consultoria do Pek</h3><p>Os botões de WhatsApp da página apontam para um link sem número e não abrem conversa nenhuma.</p></li>
+    </ul>
+  </section>
+
+  <section class="scene" aria-labelledby="c3">
+    <div class="scene-head">
+      <p class="scene-label"><span class="num">03</span>Como funciona</p>
+      <h2 id="c3">Uma régua de mensagens é uma timeline de edição</h2>
       <p class="read">Cada aviso do checkout é um marcador. Cada mensagem é um clipe com hora para entrar. Quando a compra é aprovada, entra o corte, e o que ainda não saiu é removido da timeline. Abaixo, um carrinho abandonado do começo ao fim.</p>
     </div>
 
@@ -314,13 +396,13 @@ h3 { font-size: 1.45rem; font-weight: 500; line-height: 1.15; letter-spacing: -.
           <li><time>amanhã 14:02</time><p>Nada sai. A pessoa já é compradora e não recebe cobrança do que já pagou.</p></li>
         </ol>
         <div>
-          <div class="phone" role="img" aria-label="Exemplo do que o comprador vê no WhatsApp">
-            <div class="phone-top"><span class="avatar" aria-hidden="true">L</span><div><b>Número do lançamento</b><span>mensagem automática</span></div></div>
+          <div class="phone" role="img" aria-label="Exemplo do que a compradora vê no WhatsApp">
+            <div class="phone-top"><span class="avatar" aria-hidden="true">J</span><div><b>Equipe Jeruza e Pek</b><span>mensagem automática</span></div></div>
             <div class="chat">
               <div class="sys" id="chat-1">14:02 · saiu do checkout</div>
-              <div class="bubble" id="chat-2"><p>Oi, <span class="var">nome</span>! Vi que você começou a compra do <span class="var">produto</span> e não chegou a finalizar. Seu pedido ficou salvo aqui: <span class="var">link do checkout</span></p><time>14:32</time></div>
+              <div class="bubble" id="chat-2"><p>Oi, <span class="var">nome</span>! Vi que você começou sua inscrição no Desafio Seca Barriga e não finalizou. Sua vaga ainda está aqui: <span class="var">link do checkout</span></p><time>14:32</time></div>
               <div class="sys ok" id="chat-3">14:40 · compra aprovada</div>
-              <div class="bubble" id="chat-4"><p>Boas-vindas ao <span class="var">produto</span>, <span class="var">nome</span>! Seu acesso já está liberado: <span class="var">link da área de membros</span></p><time>14:40</time></div>
+              <div class="bubble" id="chat-4"><p>Boas-vindas ao Desafio, <span class="var">nome</span>! Seu acesso já está liberado: <span class="var">link da área de membros</span></p><time>14:40</time></div>
               <div class="sys cut" id="chat-5">lembrete de amanhã cancelado</div>
             </div>
           </div>
@@ -367,129 +449,130 @@ h3 { font-size: 1.45rem; font-weight: 500; line-height: 1.15; letter-spacing: -.
     </div>
   </section>
 
-  <section class="scene" aria-labelledby="c2">
+  <section class="scene" aria-labelledby="c4">
     <div class="scene-head">
-      <p class="scene-label"><span class="num">02</span>Os cinco fluxos</p>
-      <h2 id="c2">Cinco faixas, a mesma regra de corte</h2>
-      <p class="read">Montados no primeiro produto, validados por vocês no celular e replicados nos outros quatro. Os textos são exemplos para visualizar; as mensagens finais são de vocês, e os intervalos a gente ajusta junto.</p>
+      <p class="scene-label"><span class="num">04</span>Seus produtos</p>
+      <h2 id="c4">Três grupos de produtos, a mesma regra de corte</h2>
+      <p class="read">Os fluxos usam o nome do produto e o link que vêm no próprio aviso do checkout. Assim os 11 checkouts entram sem um fluxo para cada um, e produto novo entra só marcando no aviso. O que muda é o tom da mensagem em cada grupo. Os textos abaixo são rascunhos; os intervalos a gente ajusta junto.</p>
     </div>
     <div class="flows">
       <article class="flow">
-        <div class="flow-name"><h3>Carrinho abandonado</h3><p>A pessoa preenche os dados e sai sem finalizar.</p></div>
+        <div class="flow-name"><h3>Lançamento</h3><p>Desafio Seca Barriga</p><p class="prods">R$ 59 até 15/10 · início em 19/10</p></div>
         <div class="flow-mid">
-          <div class="seq"><span class="chip ev">aviso</span><i class="arrow"></i><span class="chip ms">+30 min</span><i class="arrow"></i><span class="chip ms">+24 h</span></div>
-          <p class="stop">Para se a compra for aprovada.</p>
+          <div class="seq"><span class="chip ev">carrinho</span><i class="arrow"></i><span class="chip ms">+30 min</span><i class="arrow"></i><span class="chip ms">dia 15: último dia</span><i class="arrow"></i><span class="chip ms">dia 18: começa amanhã</span></div>
+          <p class="stop">Para na hora em que a pessoa compra. Os lembretes de data só vão para quem ainda não comprou.</p>
         </div>
-        <div class="bubble"><p>Oi, <span class="var">nome</span>! Vi que você começou a compra do <span class="var">produto</span> e não chegou a finalizar. Seu pedido ficou salvo aqui: <span class="var">link do checkout</span></p></div>
+        <div class="bubble"><p><span class="var">nome</span>, hoje é o último dia do Desafio Seca Barriga por R$ 59. Amanhã passa para R$ 79. Se quiser garantir a sua vaga: <span class="var">link do checkout</span></p></div>
       </article>
       <article class="flow">
-        <div class="flow-name"><h3>Pix não pago</h3><p>O Pix é gerado e o pagamento não cai.</p></div>
+        <div class="flow-name"><h3>Produtos de entrada</h3><p>Reprograma 21, Programa de Treinos e os quatro treinos do PM Power</p><p class="prods">6 checkouts · de R$ 59,90 a R$ 197</p></div>
         <div class="flow-mid">
-          <div class="seq"><span class="chip ev">aviso</span><i class="arrow"></i><span class="chip ms">+1 h</span></div>
-          <p class="stop">Para assim que o Pix for pago.</p>
-          <p class="note">O aviso documentado não traz o código Pix. A mensagem leva o link de pagamento, e eu confirmo nos testes se dá para mandar o próprio código.</p>
+          <div class="seq"><span class="chip ev">carrinho</span><i class="arrow"></i><span class="chip ms">+30 min</span><i class="arrow"></i><span class="chip ms">+24 h</span></div>
+          <p class="stop">Para se a compra for aprovada. Com order bump, as boas-vindas saem uma vez só, pelo produto principal.</p>
         </div>
-        <div class="bubble"><p>Oi, <span class="var">nome</span>! Seu Pix do <span class="var">produto</span> foi gerado, mas o pagamento ainda não apareceu por aqui. Para concluir: <span class="var">link de pagamento</span></p></div>
+        <div class="bubble"><p>Oi, <span class="var">nome</span>! Seu pedido do <span class="var">produto</span> ficou salvo. Se quiser concluir, é por aqui: <span class="var">link do checkout</span>. Qualquer dúvida, é só responder.</p></div>
       </article>
       <article class="flow">
-        <div class="flow-name"><h3>Boleto não pago</h3><p>O boleto é gerado e ainda não compensou.</p></div>
+        <div class="flow-name"><h3>Consultorias</h3><p>As duas da Jeruza e as duas do Pek</p><p class="prods">4 checkouts · de R$ 300 a R$ 997, em até 12x</p></div>
         <div class="flow-mid">
-          <div class="seq"><span class="chip ev">aviso</span><i class="arrow"></i><span class="chip ms">+1 dia</span><i class="arrow"></i><span class="chip ms">+2 dias</span></div>
-          <p class="stop">Para quando o pagamento compensa.</p>
-          <p class="note">Boleto leva alguns dias úteis para compensar, então o texto já fala com quem pagou e ainda não aparece como pago.</p>
+          <div class="seq"><span class="chip ev">carrinho</span><i class="arrow"></i><span class="chip ms">+30 min, pessoal</span><i class="arrow"></i><span class="chip st">aviso para a Jeruza ou o Pek</span></div>
+          <p class="stop">Venda mais cara pede conversa. A mensagem abre espaço para dúvida, e vocês recebem um aviso para assumir.</p>
         </div>
-        <div class="bubble"><p>Oi, <span class="var">nome</span>! Passando para lembrar do boleto do <span class="var">produto</span>. Se preferir, dá para pagar por Pix na hora: <span class="var">link do pedido</span>. Se você já pagou, pode desconsiderar.</p></div>
+        <div class="bubble"><p>Oi, <span class="var">nome</span>, aqui é a equipe da Jeruza. Vi que você começou a inscrição na <span class="var">consultoria</span>. Ficou alguma dúvida? Pode responder por aqui que a gente te ajuda.</p></div>
       </article>
       <article class="flow">
-        <div class="flow-name"><h3>Cartão recusado</h3><p>O pagamento no cartão é recusado.</p></div>
+        <div class="flow-name"><h3>Em todos os grupos</h3><p>Pix, cartão recusado e boas-vindas</p><p class="prods">nos checkouts que conferi não há boleto</p></div>
         <div class="flow-mid">
-          <div class="seq"><span class="chip ev">aviso</span><i class="arrow"></i><span class="chip ms">+15 min</span></div>
-          <p class="stop">Para se a compra for aprovada.</p>
+          <div class="seq"><span class="chip ev">Pix gerado</span><i class="arrow"></i><span class="chip ms">+1 h</span></div>
+          <div class="seq"><span class="chip ev">cartão recusado</span><i class="arrow"></i><span class="chip ms">+15 min</span></div>
+          <div class="seq"><span class="chip ev">compra aprovada</span><i class="arrow"></i><span class="chip ms">na hora</span><i class="arrow"></i><span class="chip st">corta os outros</span></div>
+          <p class="note">O aviso de Pix não traz o código do Pix. A mensagem leva o link de pagamento, e eu confirmo nos testes se dá para mandar o próprio código.</p>
         </div>
-        <div class="bubble"><p>Oi, <span class="var">nome</span>! O pagamento do <span class="var">produto</span> não passou no cartão. Às vezes é limite ou bloqueio do banco. Dá para tentar de novo com outro cartão ou pagar por Pix: <span class="var">link do checkout</span></p></div>
+        <div class="bubble"><p>Oi, <span class="var">nome</span>! O pagamento do <span class="var">produto</span> não passou no cartão. Às vezes é limite ou bloqueio do banco. Dá para tentar outro cartão ou pagar por Pix: <span class="var">link do checkout</span></p></div>
       </article>
-      <article class="flow">
-        <div class="flow-name"><h3>Compra aprovada</h3><p>O pagamento é aprovado.</p></div>
-        <div class="flow-mid">
-          <div class="seq"><span class="chip ev">aviso</span><i class="arrow"></i><span class="chip ms">na hora</span><i class="arrow"></i><span class="chip st">corta os outros</span></div>
-          <p class="stop">Envia uma vez só e marca a pessoa como compradora, o que cancela os lembretes pendentes dos outros fluxos.</p>
-          <p class="note">A The Members pode já mandar um aviso de compra pelo número dela. Conferimos no painel para a pessoa não receber duas mensagens.</p>
-        </div>
-        <div class="bubble"><p>Boas-vindas ao <span class="var">produto</span>, <span class="var">nome</span>! Seu acesso já está liberado: <span class="var">link da área de membros</span>. Qualquer dúvida, é só chamar aqui.</p></div>
-      </article>
-    </div>
-  </section>
-
-  <section class="scene" aria-labelledby="c3">
-    <div class="scene-head">
-      <p class="scene-label"><span class="num">03</span>Cuidados</p>
-      <h2 id="c3">O que já vem configurado em todos os fluxos</h2>
-    </div>
-    <ul class="rules">
-      <li data-reveal><h3>Horário de envio</h3><p>Nada sai de madrugada. A gente define a janela (por exemplo, das 8h às 21h), e o que cair fora dela espera a próxima.</p></li>
-      <li data-reveal><h3>Sem mensagem em dobro</h3><p>A The Members já pode mandar avisos de pagamento pelo número dela. Conferimos o que está ligado antes de ativar Pix, boleto e compra aprovada.</p></li>
-      <li data-reveal><h3>Só quem iniciou a compra</h3><p>As mensagens vão apenas para quem deixou o telefone no checkout. Quem responder SAIR deixa de receber.</p></li>
-      <li data-reveal><h3>Telefone no formato certo</h3><p>Números sem DDD, com espaço ou sem o 9 são ajustados antes do envio, para a mensagem não se perder.</p></li>
-    </ul>
-  </section>
-
-  <section class="scene" aria-labelledby="c4">
-    <div class="scene-head">
-      <p class="scene-label"><span class="num">04</span>Ferramenta</p>
-      <h2 id="c4">Sem API oficial, como vocês preferem</h2>
-      <p class="read">A assinatura fica no nome de vocês. Preços conferidos nos sites oficiais em 13/10/2026.</p>
-    </div>
-    <div class="tools">
-      <article class="tool rec-tool" data-reveal>
-        <div class="tool-top"><h3>BotConversa Pro</h3><span class="pill">recomendada</span></div>
-        <p class="price">R$ 199/mês<small>no plano anual · R$ 299 no mensal</small></p>
-        <dl>
-          <div><dt>Quem troca as mensagens</dt><dd>Vocês, num editor visual</dd></div>
-          <div><dt>Por quê</dt><dd>Recebe os avisos do checkout da The Members, com o WhatsApp conectado por QR Code.</dd></div>
-        </dl>
-        <p><span class="pill">confirmado com o BotConversa</span></p>
-        <p class="g-note">O Starter (R$ 189) não recebe os avisos do checkout, então não serve. O comercial do BotConversa confirmou por escrito que o Pro recebe os avisos com o WhatsApp conectado por QR Code, até 25 mil por mês. Se algo não funcionar, a garantia devolve o valor.</p>
-      </article>
-      <article class="tool" data-reveal>
-        <div class="tool-top"><h3>ZapFácil</h3><span class="pill wait">plano B</span></div>
-        <p class="price">R$ 47/mês<small>a partir de</small></p>
-        <dl>
-          <div><dt>Quem troca as mensagens</dt><dd>Eu</dd></div>
-          <div><dt>Quando faz sentido</dt><dd>Mais barata e mais técnica. Entra se o BotConversa não atender.</dd></div>
-        </dl>
-      </article>
-      <article class="tool" data-reveal>
-        <div class="tool-top"><h3>Solução própria</h3></div>
-        <p class="price">R$ 30–160/mês<small>servidor e conexão</small></p>
-        <dl>
-          <div><dt>Quem troca as mensagens</dt><dd>Eu</dd></div>
-          <div><dt>Quando faz sentido</dt><dd>Sob medida, sem assinatura de ferramenta. Desenvolvimento por R$ 1.500, no lugar dos R$ 700.</dd></div>
-        </dl>
-      </article>
-    </div>
-    <div class="callout" data-reveal>
-      <b>Sobre o número</b>
-      <p>Sem a API oficial, o WhatsApp pode bloquear o número. O risco é menor com volume baixo e diminui mais com um número dedicado ao lançamento, envio só para quem iniciou a compra e intervalo entre envios. Se o volume crescer bastante, a API oficial passa a ser o caminho seguro.</p>
     </div>
   </section>
 
   <section class="scene" aria-labelledby="c5">
     <div class="scene-head">
-      <p class="scene-label"><span class="num">05</span>Cronograma</p>
-      <h2 id="c5">Até duas semanas a partir dos acessos e das mensagens</h2>
-      <p class="read">Contado em dias de trabalho depois que chegam os acessos e as copies. Se o lançamento for antes disso, começo por carrinho abandonado e compra aprovada.</p>
+      <p class="scene-label"><span class="num">05</span>Cuidados</p>
+      <h2 id="c5">O que já vem configurado em todos os fluxos</h2>
     </div>
-    <div class="gantt" role="table" aria-label="Cronograma em dias">
+    <ul class="rules">
+      <li data-reveal><h3>Horário de envio</h3><p>Nada sai de madrugada. A gente define a janela (por exemplo, das 8h às 21h), e o que cair fora dela espera a próxima.</p></li>
+      <li data-reveal><h3>Sem mensagem em dobro</h3><p>A The Members já pode mandar avisos de pagamento pelo número dela. Confiro o que está ligado antes de ativar Pix e boas-vindas.</p></li>
+      <li data-reveal><h3>Só quem iniciou a compra</h3><p>As mensagens vão apenas para quem deixou o telefone no checkout. Quem responder SAIR deixa de receber.</p></li>
+      <li data-reveal><h3>Telefone no formato certo</h3><p>Números sem DDD, com espaço ou sem o 9 são ajustados antes do envio, para a mensagem não se perder.</p></li>
+    </ul>
+  </section>
+
+  <section class="scene" aria-labelledby="c6">
+    <div class="scene-head">
+      <p class="scene-label"><span class="num">06</span>Ferramenta</p>
+      <h2 id="c6">Decidimos no primeiro dia, com o painel aberto</h2>
+      <p class="read">Vocês perguntaram se dá para fazer pela própria The Members. Ela tem réguas prontas, mas, pela documentação dela, mandar pelo número de vocês exige a API oficial do WhatsApp, que cobra por mensagem. O custo do recurso só aparece no painel. Por isso, no primeiro dia, eu confiro e a gente escolhe entre os dois caminhos.</p>
+    </div>
+    <div class="tools">
+      <article class="tool" data-reveal>
+        <div class="tool-top"><h3>Recurso da The Members</h3><span class="pill wait">confiro no painel</span></div>
+        <p class="price">já na conta<small>custo do recurso: confiro no painel</small></p>
+        <dl>
+          <div><dt>Bom porque</dt><dd>Réguas prontas para carrinho, Pix e cartão, que param sozinhas quando a pessoa paga.</dd></div>
+          <div><dt>Atenção</dt><dd>Pelo número de vocês, exige a API oficial: a Meta cobra cerca de R$ 0,37 por lembrete de carrinho.</dd></div>
+        </dl>
+      </article>
+      <article class="tool rec-tool" data-reveal>
+        <div class="tool-top"><h3>BotConversa Pro</h3><span class="pill">confirmado com o BotConversa</span></div>
+        <p class="price">R$ 199/mês<small>no plano anual · R$ 299 no mensal</small></p>
+        <dl>
+          <div><dt>Bom porque</dt><dd>Funciona com o número conectado por QR Code, sem API oficial e sem custo por mensagem, até 25 mil avisos por mês. Vocês trocam as mensagens num editor visual.</dd></div>
+          <div><dt>Atenção</dt><dd>O comercial ofereceu o anual por R$ 2.188; confirmo se a condição vale para vocês. Tem garantia de 7 dias no mensal e 30 no anual.</dd></div>
+        </dl>
+      </article>
+    </div>
+    <div class="callout" data-reveal>
+      <b>Sobre o número</b>
+      <p>Sem a API oficial, o WhatsApp pode bloquear o número se o volume for alto. O risco diminui com um número dedicado ao lançamento, envio só para quem iniciou a compra e intervalo entre envios. Se o volume crescer bastante, a API oficial passa a ser o caminho seguro.</p>
+    </div>
+  </section>
+
+  <section class="scene" aria-labelledby="c7">
+    <div class="scene-head">
+      <p class="scene-label"><span class="num">07</span>Fase 1</p>
+      <h2 id="c7">R$ 700, uma vez, para deixar tudo no ar</h2>
+      <p class="read">Começo pelo carrinho do Desafio, que entra no ar em até 1 dia útil depois dos acessos e da ferramenta escolhida. O resto fica pronto em até duas semanas.</p>
+    </div>
+    <div class="split">
+      <div class="list-col" data-reveal>
+        <h3>Vocês recebem</h3>
+        <ul class="checks">
+          <li>Avisos da The Members ligados nos 11 checkouts</li>
+          <li>O rascunho de todas as mensagens, para vocês aprovarem</li>
+          <li>Os fluxos dos três grupos, com a regra de parada e os lembretes do lançamento</li>
+          <li>Testes de cada cenário antes de ligar, com os eventos simulados no painel e conferência no celular</li>
+          <li>Um guia de uma página: onde fica cada fluxo e como trocar uma mensagem</li>
+        </ul>
+      </div>
+      <div class="list-col" data-reveal>
+        <h3>Preciso de vocês</h3>
+        <ul class="checks need">
+          <li>Um usuário meu no painel da The Members (não a senha de vocês)</li>
+          <li>O número que vai enviar as mensagens, de preferência dedicado</li>
+          <li>Aprovação das mensagens e dos intervalos</li>
+          <li>Quem aprova os fluxos do lado de vocês</li>
+        </ul>
+      </div>
+    </div>
+    <div class="gantt" role="table" aria-label="Cronograma da fase 1 em dias">
       <div class="g-row g-days" role="row" aria-hidden="true">
         <div class="g-label"></div>
         <div class="g-track"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
       </div>
-      <div class="g-row" role="row"><div class="g-label" role="cell"><span>DUO · dia 1</span>Acessos, número, mapa dos produtos e mensagens</div><div class="g-track" role="cell"><i class="bar duo" style="grid-column:1 / 2"></i></div></div>
-      <div class="g-row" role="row"><div class="g-label" role="cell"><span>DUO + Vinicius · dias 1–2</span>Ferramenta assinada, número conectado, avisos em modo de teste</div><div class="g-track" role="cell"><i class="bar both" style="grid-column:1 / 3"></i></div></div>
-      <div class="g-row" role="row"><div class="g-label" role="cell"><span>Vinicius · dias 2–5</span>Os cinco fluxos no primeiro produto, com regra de parada e testes</div><div class="g-track" role="cell"><i class="bar vini" style="grid-column:2 / 6"></i></div></div>
-      <div class="g-row" role="row"><div class="g-label" role="cell"><span>DUO · dia 5</span>Validação de vocês no celular</div><div class="g-track" role="cell"><i class="bar duo" style="grid-column:5 / 6"></i></div></div>
-      <div class="g-row" role="row"><div class="g-label" role="cell"><span>Vinicius · dias 6–8</span>Ajustes e réplica nos outros quatro produtos</div><div class="g-track" role="cell"><i class="bar vini" style="grid-column:6 / 9"></i></div></div>
-      <div class="g-row" role="row"><div class="g-label" role="cell"><span>Vinicius · dias 8–10</span>Tudo em modo ativo, guia de uma página e entrega</div><div class="g-track" role="cell"><i class="bar vini" style="grid-column:8 / 11"></i></div></div>
+      <div class="g-row" role="row"><div class="g-label" role="cell"><span>DUO + Vinicius · dia 1</span>Acessos, conferência do painel e ferramenta escolhida</div><div class="g-track" role="cell"><i class="bar both" style="grid-column:1 / 2"></i></div></div>
+      <div class="g-row" role="row"><div class="g-label" role="cell"><span>Vinicius · dias 1–2</span>Carrinho do Desafio no ar</div><div class="g-track" role="cell"><i class="bar vini" style="grid-column:1 / 3"></i></div></div>
+      <div class="g-row" role="row"><div class="g-label" role="cell"><span>Vinicius · dias 2–5</span>Fluxos dos três grupos, Pix, cartão e boas-vindas, com testes</div><div class="g-track" role="cell"><i class="bar vini" style="grid-column:2 / 6"></i></div></div>
+      <div class="g-row" role="row"><div class="g-label" role="cell"><span>DUO · dia 5</span>Aprovação das mensagens e validação no celular</div><div class="g-track" role="cell"><i class="bar duo" style="grid-column:5 / 6"></i></div></div>
+      <div class="g-row" role="row"><div class="g-label" role="cell"><span>Vinicius · dias 6–10</span>Ajustes, tudo em modo ativo, guia e entrega</div><div class="g-track" role="cell"><i class="bar vini" style="grid-column:6 / 11"></i></div></div>
     </div>
     <div class="legend">
       <span><i style="--c: var(--duo)"></i>DUO</span>
@@ -498,58 +581,143 @@ h3 { font-size: 1.45rem; font-weight: 500; line-height: 1.15; letter-spacing: -.
     </div>
   </section>
 
-  <section class="scene" aria-labelledby="c6">
+  <section class="scene" aria-labelledby="c8">
     <div class="scene-head">
-      <p class="scene-label"><span class="num">06</span>Entrega</p>
-      <h2 id="c6">O que vocês recebem e o que eu preciso para começar</h2>
+      <p class="scene-label"><span class="num">08</span>Suporte mensal</p>
+      <h2 id="c8">Alguém cuidando disso todo mês</h2>
+      <p class="read">Depois da fase 1, a régua precisa de atenção: produto novo, lançamento novo, mensagem que muda, número que desconecta. Quatro níveis, para vocês escolherem quanto querem delegar.</p>
     </div>
-    <div class="split">
-      <div class="list-col" data-reveal>
-        <h3>Vocês recebem</h3>
-        <ul class="checks">
-          <li>Avisos da The Members ligados nos cinco produtos</li>
-          <li>Os cinco fluxos montados no primeiro produto, com a regra de parada</li>
-          <li>Fluxos replicados nos outros quatro produtos depois da validação de vocês</li>
-          <li>Testes com compras de teste: todos os cenários no primeiro produto e conferência nos outros quatro</li>
-          <li>Um guia de uma página: onde fica cada fluxo e como trocar uma mensagem</li>
+    <div class="plans">
+      <article class="plan" data-reveal>
+        <h3>Monitoramento</h3>
+        <p class="price">R$ 250<small>por mês · até 2 h</small></p>
+        <ul>
+          <li>Conferência semanal das réguas e do número</li>
+          <li>Se uma régua parar, eu corrijo</li>
+          <li>Resumo mensal do que saiu e do que falhou</li>
         </ul>
-        <p class="out">Ficam para as próximas fases: e-mails, organização do CRM e agente de IA para atendimento.</p>
+        <p class="sla">Resposta em até 2 dias úteis</p>
+      </article>
+      <article class="plan" data-reveal>
+        <h3>Manutenção</h3>
+        <p class="price">R$ 500<small>por mês · até 5 h</small></p>
+        <p class="from">Tudo do Monitoramento, mais:</p>
+        <ul>
+          <li>Troca de mensagens e intervalos</li>
+          <li>Produtos e ofertas novas nas réguas</li>
+        </ul>
+        <p class="sla">Resposta em até 1 dia útil</p>
+      </article>
+      <article class="plan" data-reveal>
+        <h3>Manutenção + lançamento</h3>
+        <p class="price">R$ 750<small>por mês · até 8 h</small></p>
+        <p class="from">Tudo da Manutenção, mais:</p>
+        <ul>
+          <li>Réguas de um lançamento por mês: virada de preço, último dia, início</li>
+          <li>Conferência mensal das páginas e dos checkouts</li>
+        </ul>
+        <p class="sla">Resposta em até 1 dia útil</p>
+      </article>
+      <article class="plan rec" data-reveal>
+        <div class="tool-top"><h3>Suporte completo</h3><span class="pill">recomendado</span></div>
+        <p class="price">R$ 1.000<small>por mês · até 12 h</small></p>
+        <p class="from">Tudo dos anteriores, mais:</p>
+        <ul>
+          <li>Conferência diária das réguas e do número</li>
+          <li>Réguas de todos os lançamentos, com cupom e oferta menor quando fizer sentido</li>
+          <li>Acompanhamento diário na semana de lançamento</li>
+          <li>Resumo semanal no WhatsApp e relatório mensal de vendas recuperadas</li>
+          <li>Reunião mensal de 30 minutos</li>
+        </ul>
+        <p class="sla">Resposta em até 1 dia útil; na semana de lançamento, no mesmo dia</p>
+      </article>
+    </div>
+    <p class="plan-notes"><span>A ferramenta fica no nome de vocês e é paga direto ao fornecedor.</span><span>Mensal, sem fidelidade, com aviso de 30 dias.</span><span>Hora além do plano, só com aprovação antes.</span></p>
+  </section>
+
+  <section class="scene" aria-labelledby="c9">
+    <div class="scene-head">
+      <p class="scene-label"><span class="num">09</span>Parceria de TI</p>
+      <h2 id="c9">Ou um time de tecnologia sem contratar um</h2>
+      <p class="read">Para quando vocês quiserem ir além da régua: plataforma própria, agentes de IA no atendimento e novos produtos digitais, com alguém responsável por tudo isso.</p>
+    </div>
+    <article class="big-plan" data-reveal>
+      <div class="bp-head">
+        <div>
+          <h3>TI completo</h3>
+          <p class="bp-pitch">Tudo do Suporte completo, mais até 40 horas por mês de desenvolvimento.</p>
+        </div>
+        <p class="price">R$ 3.000<small>por mês · até 40 h</small></p>
       </div>
-      <div class="list-col" data-reveal>
-        <h3>Preciso de vocês</h3>
-        <ul class="checks need">
-          <li>Um usuário meu no painel da The Members (não a senha de vocês)</li>
-          <li>O número que vai enviar as mensagens, de preferência dedicado ao lançamento</li>
-          <li>As mensagens dos cinco fluxos</li>
-          <li>A data do lançamento</li>
-          <li>A janela de horário e os intervalos de cada fluxo</li>
-          <li>Quem aprova os fluxos do lado de vocês</li>
+      <div class="bp-cols">
+        <ul>
+          <li>Plataforma própria de recuperação e mensagens, com painel de vendas recuperadas, no nome de vocês</li>
+          <li>Hospedagem e operação: servidor, domínio, HTTPS, backup diário, atualizações de segurança e alerta automático se algo parar</li>
+          <li>Agentes de IA de atendimento, preparados com o conteúdo de vocês (produtos, preços, dúvidas frequentes) e testados com perguntas reais antes de ir para o ar</li>
         </ul>
+        <ul>
+          <li>Novos produtos digitais: LPs, páginas de captura, quizzes de diagnóstico e integrações de e-mail e CRM</li>
+          <li>Treinamento da equipe: sessões ao vivo gravadas e um guia para cada ferramenta</li>
+          <li>Resposta no mesmo dia útil, reunião quinzenal e um plano para cada trimestre</li>
+        </ul>
+      </div>
+      <p class="bp-from">Os primeiros 90 dias</p>
+      <ol class="roadmap">
+        <li><b>Mês 1</b><p>Régua nos 11 checkouts, os 4 ajustes corrigidos e o painel de vendas recuperadas.</p></li>
+        <li><b>Mês 2</b><p>Agente de IA para as consultorias e mentorias vendidas pelo WhatsApp, testado num piloto antes de atender todo mundo, e e-mails de recuperação.</p></li>
+        <li><b>Mês 3</b><p>Plataforma própria no lugar da ferramenta paga, se compensar, e a LP com quiz do próximo lançamento.</p></li>
+      </ol>
+      <p class="bp-note">Servidor, IA e WhatsApp ficam no nome de vocês e são pagos direto ao fornecedor. Agente de IA no WhatsApp pede a API oficial, que é o caminho seguro para esse uso; o custo por conversa é medido no piloto, antes de ligar para todo mundo. A ordem dos meses muda conforme o que der mais resultado.</p>
+    </article>
+    <div class="split" data-reveal>
+      <div class="list-col">
+        <h3>Negociação bem-vinda</h3>
+        <p class="read">O TI completo é um ponto de partida. Se o momento de vocês pede menos horas ou outra combinação de entregas, a gente ajusta o pacote e o valor juntos.</p>
+      </div>
+      <div class="list-col">
+        <h3>Ou por projeto</h3>
+        <p class="read">Se preferirem não ter um valor mensal, cada entrega pode ser contratada à parte, com preço fechado: o agente de IA, a plataforma própria, uma LP com quiz ou uma integração. O orçamento vai por escrito antes de começar.</p>
       </div>
     </div>
   </section>
 
-  <section class="scene" aria-labelledby="c7">
+  <section class="scene" aria-labelledby="c10">
     <div class="scene-head">
-      <p class="scene-label"><span class="num">07</span>Investimento</p>
-      <h2 id="c7">Um valor fechado para a fase 1</h2>
+      <p class="scene-label"><span class="num">10</span>Como eu trabalho</p>
+      <h2 id="c10">Sem dor de cabeça, por escrito</h2>
+      <p class="read">Quem vai fazer sou eu, Vinicius Gomes. Sou cientista da computação, cofundador do Oralito, um SaaS de IA em produção com assinatura paga, e no dia a dia integro sistemas por API. Meus projetos públicos estão no <a href="https://github.com/Novachrono117">GitHub</a>, e a minha trajetória, no <a href="https://www.linkedin.com/in/vinicius-gomes-239139268">LinkedIn</a>.</p>
     </div>
-    <div class="final">
-      <div data-reveal>
-        <p class="big">R$ 700<small>preço fechado · fase 1</small></p>
-      </div>
-      <ul class="terms-list" data-reveal>
-        <li>Inclui tudo o que está em “Vocês recebem”, para até cinco fluxos nos cinco produtos.</li>
-        <li>Não inclui a assinatura da ferramenta nem o chip do número, que ficam no nome de vocês.</li>
-        <li>Forma de pagamento: a combinar.</li>
-      </ul>
+    <ul class="rules">
+      <li data-reveal><h3>Prazo de resposta combinado</h3><p>Cada plano tem o seu prazo escrito. Vocês sabem quando vou responder antes de mandar a mensagem.</p></li>
+      <li data-reveal><h3>Notícia sem precisar pedir</h3><p>Vocês recebem o resumo do que saiu, do que falhou e do que mudou, sem ter que cobrar.</p></li>
+      <li data-reveal><h3>Tudo no nome de vocês</h3><p>Ferramentas, número, servidor, código e acessos ficam com vocês e documentados. Nada fica preso comigo.</p></li>
+      <li data-reveal><h3>Preço fechado, sem surpresa</h3><p>O que entra em cada plano está escrito. Hora extra só existe se vocês aprovarem antes.</p></li>
+      <li data-reveal><h3>Teste antes de ligar</h3><p>Nenhuma régua vai para o ar sem passar pelos cenários de teste e pelo celular de vocês.</p></li>
+      <li data-reveal><h3>Um ponto de contato</h3><p>Vocês falam comigo. Sem repasse e sem fila de atendimento.</p></li>
+    </ul>
+  </section>
+
+  <section class="scene" aria-labelledby="c11">
+    <div class="scene-head">
+      <p class="scene-label"><span class="num">11</span>Investimento</p>
+      <h2 id="c11">Resumo e próximos passos</h2>
     </div>
+    <dl class="sum" data-reveal>
+      <div><dt>Fase 1</dt><dd><p class="price">R$ 700<small>uma vez · tudo no ar em até 2 semanas</small></p></dd></div>
+      <div><dt>Suporte mensal</dt><dd><p class="price">R$ 250 a 1.000<small>por mês · recomendado: R$ 1.000</small></p></dd></div>
+      <div><dt>Parceria de TI</dt><dd><p class="price">R$ 3.000<small>por mês, negociável · ou por projeto</small></p></dd></div>
+    </dl>
+    <ul class="terms-list" data-reveal>
+      <li>Ferramentas, chip do número, servidor e IA ficam no nome de vocês e não estão nos valores acima.</li>
+      <li>Planos mensais sem fidelidade, com aviso de 30 dias.</li>
+      <li>Forma de pagamento: a combinar.</li>
+    </ul>
     <div class="list-col" data-reveal>
       <h3>Próximos passos</h3>
       <ol class="next">
-        <li>Vocês me mandam os acessos, o número e as mensagens.</li>
-        <li>Vocês assinam o BotConversa Pro, e eu ligo os avisos do checkout.</li>
-        <li>Em até duas semanas, os cinco produtos estão com a régua no ar.</li>
+        <li>Vocês escolhem: só a fase 1, ou a fase 1 com um plano mensal.</li>
+        <li>Me mandam um usuário no painel da The Members e o número do lançamento.</li>
+        <li>No mesmo dia eu confiro o painel, a gente fecha a ferramenta e o carrinho do Desafio entra no ar.</li>
       </ol>
     </div>
   </section>
@@ -559,11 +727,13 @@ h3 { font-size: 1.45rem; font-weight: 500; line-height: 1.15; letter-spacing: -.
       <div><dt>Proposta</dt><dd>Vinicius Gomes</dd></div>
       <div><dt>WhatsApp</dt><dd><a href="https://wa.me/5561981739886">+55 (61) 98173-9886</a></dd></div>
       <div><dt>E-mail</dt><dd><a href="mailto:vinicius08gomes@gmail.com">vinicius08gomes@gmail.com</a></dd></div>
-      <div><dt>Para</dt><dd>DUO cose creative</dd></div>
+      <div><dt>Projetos</dt><dd><a href="https://github.com/Novachrono117">github.com/Novachrono117</a></dd></div>
+      <div><dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/in/vinicius-gomes-239139268">linkedin.com/in/vinicius-gomes-239139268</a></dd></div>
+      <div><dt>Para</dt><dd>DUO cose creative · Jeruza Mattos e Pek Manzano</dd></div>
       <div><dt>Data</dt><dd>13 de outubro de 2026</dd></div>
     </dl>
     <p class="fim">Fim</p>
-    <p class="fine">Os preços das ferramentas foram conferidos nos sites oficiais em 13/10/2026. O comportamento dos avisos segue a central de ajuda da The Members e é confirmado nos testes com compras de teste.</p>
+    <p class="fine">Preços das ferramentas conferidos nos sites oficiais em 13/10/2026. Produtos, preços e checkouts conferidos nas páginas públicas em 13/10/2026. O comportamento dos avisos segue a central de ajuda da The Members e é confirmado nos testes.</p>
   </footer>
 </main>
 

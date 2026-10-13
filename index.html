@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Régua de Recuperação no WhatsApp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: proposta em coluna de leitura (~720px); a demonstração dos fluxos abre em duas colunas (detalhes | celular) e empilha no celular. */
+:root {
+  --bg: #F5F8F6;
+  --surface: #FFFFFF;
+  --ink: #13201A;
+  --muted: #55645B;
+  --line: #D9E2DC;
+  --accent: #0B6E4F;
+  --accent-soft: #E1F0E8;
+  --warn: #8A5200;
+  --warn-soft: #FAEFD9;
+  --stop: #B42318;
+  --stop-soft: #FBE7E4;
+  --chat-bg: #E9EEE9;
+  --bubble: #FFFFFF;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D1411; --surface: #141D19; --ink: #E3ECE6; --muted: #9AABA1; --line: #27352E;
+    --accent: #45C493; --accent-soft: #15302A; --warn: #E2A64B; --warn-soft: #2D2415;
+    --stop: #F08A7E; --stop-soft: #351B1A; --chat-bg: #0F1814; --bubble: #1C2822;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D1411; --surface: #141D19; --ink: #E3ECE6; --muted: #9AABA1; --line: #27352E;
+  --accent: #45C493; --accent-soft: #15302A; --warn: #E2A64B; --warn-soft: #2D2415;
+  --stop: #F08A7E; --stop-soft: #351B1A; --chat-bg: #0F1814; --bubble: #1C2822;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  padding: 0 20px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 48px 72px; display: grid; gap: 72px; }
+.col { max-width: 720px; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2rem, 5vw, 3.1rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.5rem, 3vw, 1.95rem); font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 700; }
+p { margin: 0; }
+.eyebrow {
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+}
+.lede { font-size: 1.15rem; color: var(--muted); max-width: 62ch; }
+.muted { color: var(--muted); }
+.small { font-size: 0.9rem; }
+.mono { font-family: var(--font-mono); font-size: 0.85em; }
+section { display: grid; gap: 20px; }
+.section-head { display: grid; gap: 8px; }
+
+/* Hero */
+.hero { display: grid; gap: 20px; }
+.terms {
+  display: flex; flex-wrap: wrap; gap: 12px 40px; margin: 8px 0 0; padding: 20px 0 0;
+  border-top: 1px solid var(--line);
+}
+.terms div { display: grid; gap: 2px; }
+.terms dt { font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.terms dd { margin: 0; font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.terms dd small { font-family: var(--font-body); font-size: 0.85rem; font-weight: 500; color: var(--muted); }
+.byline { font-size: 0.9rem; color: var(--muted); }
+
+/* Como funciona */
+.chain { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; align-items: stretch; }
+.node {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 18px; display: grid; gap: 6px; align-content: start; position: relative;
+}
+.node .step { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); }
+.node p { font-size: 0.95rem; color: var(--muted); }
+.link-arrow { display: none; }
+.chain-row { display: grid; grid-template-columns: minmax(0,1fr) 36px minmax(0,1fr) 36px minmax(0,1fr); align-items: center; }
+.arrow { height: 2px; background: var(--line); position: relative; margin: 0 4px; }
+.arrow::after {
+  content: ""; position: absolute; right: -2px; top: -4px;
+  border-left: 7px solid var(--line); border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+}
+.stopline {
+  display: flex; gap: 12px; align-items: flex-start; background: var(--stop-soft); color: var(--ink);
+  border-radius: var(--radius); padding: 14px 16px; font-size: 0.95rem;
+}
+.stopline strong { color: var(--stop); }
+.dot { flex: none; width: 10px; height: 10px; border-radius: 50%; margin-top: 7px; background: var(--stop); }
+
+/* Demo dos fluxos */
+.demo { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 32px; align-items: start; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tab {
+  font: inherit; font-size: 0.92rem; font-weight: 500; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  padding: 8px 14px; border-radius: 999px;
+}
+.tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.tab:focus-visible, .switch input:focus-visible + .track { outline: 3px solid var(--accent); outline-offset: 2px; }
+.flow-info { display: grid; gap: 18px; margin-top: 20px; }
+.facts { display: grid; gap: 0; margin: 0; border-top: 1px solid var(--line); }
+.facts div { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.facts dt { font-size: 0.85rem; color: var(--muted); }
+.facts dd { margin: 0; font-size: 0.97rem; }
+.note {
+  background: var(--warn-soft); border-radius: var(--radius); padding: 12px 16px; font-size: 0.92rem;
+  display: grid; gap: 2px;
+}
+.note b { color: var(--warn); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.switch { display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 0.95rem; user-select: none; }
+.switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.track { width: 40px; height: 22px; border-radius: 999px; background: var(--line); position: relative; flex: none; transition: background .2s; }
+.track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--surface); transition: transform .2s; }
+.switch input:checked + .track { background: var(--accent); }
+.switch input:checked + .track::after { transform: translateX(18px); }
+
+.phone {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 28px; padding: 10px;
+  max-width: 380px; width: 100%; justify-self: center;
+}
+.phone-top { display: flex; align-items: center; gap: 10px; padding: 8px 10px 12px; }
+.avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 700; font-family: var(--font-display); }
+.phone-top b { display: block; font-size: 0.92rem; }
+.phone-top span { font-size: 0.78rem; color: var(--muted); }
+.chat { background: var(--chat-bg); border-radius: 20px; padding: 16px 12px; display: grid; gap: 10px; min-height: 420px; align-content: start; }
+.bubble {
+  background: var(--bubble); border-radius: 4px 14px 14px 14px; padding: 9px 12px 6px; max-width: 90%;
+  font-size: 0.9rem; line-height: 1.45; justify-self: start;
+}
+.bubble time { display: block; text-align: right; font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+.bubble.cancel { opacity: 0.55; }
+.bubble.cancel .txt { text-decoration: line-through; }
+.bubble.cancel time { color: var(--stop); text-decoration: none; }
+.var { font-family: var(--font-mono); font-size: 0.82em; background: var(--accent-soft); color: var(--accent); padding: 0 5px; border-radius: 4px; white-space: nowrap; }
+.event {
+  justify-self: center; font-size: 0.76rem; color: var(--muted); border: 1px dashed var(--muted);
+  border-radius: 999px; padding: 3px 10px; text-align: center;
+}
+.event.ok { color: var(--accent); border-color: var(--accent); }
+.caption { font-size: 0.82rem; color: var(--muted); max-width: 380px; justify-self: center; text-align: center; }
+.phone-col { display: grid; gap: 12px; }
+@media (prefers-reduced-motion: no-preference) {
+  .chat > * { animation: in .25s ease both; }
+  @keyframes in { from { transform: translateY(4px); opacity: .4; } to { transform: none; opacity: 1; } }
+}
+
+/* Regras */
+.rules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 32px; margin: 0; padding: 0; list-style: none; }
+.rules li { display: grid; gap: 4px; }
+.rules p { color: var(--muted); font-size: 0.95rem; }
+
+/* Entregáveis e pedidos */
+.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+.checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.checks li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; font-size: 0.97rem; }
+.checks li::before {
+  content: ""; width: 16px; height: 16px; margin-top: 4px; border-radius: 4px; border: 1.5px solid var(--accent);
+}
+.checks.done li::before { background: var(--accent); box-shadow: inset 0 0 0 3px var(--surface); }
+.out { font-size: 0.92rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
+
+/* Ferramenta */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 0.93rem; }
+th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+td.price { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pill { display: inline-block; font-size: 0.74rem; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); margin-left: 6px; vertical-align: 2px; }
+.pill.wait { background: var(--warn-soft); color: var(--warn); }
+
+/* Cronograma */
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-left: 2px solid var(--line); }
+.timeline li { display: grid; grid-template-columns: 110px minmax(0, 1fr) auto; gap: 16px; padding: 12px 0 12px 20px; position: relative; align-items: baseline; }
+.timeline li::before { content: ""; position: absolute; left: -6px; top: 20px; width: 10px; height: 10px; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); }
+.timeline .when { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); }
+.who { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
+
+/* Investimento */
+.price-block { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 32px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; }
+.big { font-family: var(--font-display); font-size: clamp(2.4rem, 6vw, 3.4rem); font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; line-height: 1; }
+.price-block ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 0.95rem; }
+
+footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 20px; }
+
+@media (max-width: 820px) {
+  .demo, .split, .rules { grid-template-columns: minmax(0, 1fr); }
+  .chain-row { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .arrow { width: 2px; height: 22px; margin: 0 auto; }
+  .arrow::after { right: -4px; top: auto; bottom: -2px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid var(--line); border-bottom: 0; }
+  .price-block { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+}
+@media (max-width: 520px) {
+  body { padding: 0 16px; }
+  .wrap { padding-block: 32px 56px; gap: 56px; }
+  .facts div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .timeline li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+}
+</style>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero col">
+    <p class="eyebrow">Proposta para DUO cose creative · Fase 1</p>
+    <h1>Mensagens de WhatsApp que recuperam a venda e param quando a pessoa compra</h1>
+    <p class="lede">Cinco fluxos automáticos ligados ao checkout da The Members. Eu monto tudo no primeiro produto, vocês validam no celular, e eu replico nos outros quatro.</p>
+    <dl class="terms">
+      <div><dt>Investimento</dt><dd>R$ 700 <small>preço fechado</small></dd></div>
+      <div><dt>Produtos</dt><dd>5</dd></div>
+      <div><dt>Fluxos</dt><dd>até 5 <small>mesmo valor</small></dd></div>
+      <div><dt>Prazo</dt><dd>até 2 semanas <small>após acessos e copies</small></dd></div>
+    </dl>
+    <p class="byline">Preparado por Vinicius Gomes · 13 de outubro de 2026</p>
+  </header>
+
+  <section class="col">
+    <div class="section-head">
+      <p class="eyebrow">Como funciona</p>
+      <h2>O checkout avisa, a ferramenta espera e envia</h2>
+    </div>
+    <div class="chain-row" role="list">
+      <div class="node" role="listitem">
+        <span class="step">1 · The Members</span>
+        <h3>A pessoa inicia a compra</h3>
+        <p>Abandona, gera um Pix ou boleto, tem o cartão recusado ou compra. A The Members avisa na hora.</p>
+      </div>
+      <div class="arrow" aria-hidden="true"></div>
+      <div class="node" role="listitem">
+        <span class="step">2 · Ferramenta de WhatsApp</span>
+        <h3>O fluxo certo começa</h3>
+        <p>A ferramenta espera o intervalo combinado e, antes de cada envio, confere se a pessoa ainda não comprou.</p>
+      </div>
+      <div class="arrow" aria-hidden="true"></div>
+      <div class="node" role="listitem">
+        <span class="step">3 · Celular do comprador</span>
+        <h3>A mensagem chega</h3>
+        <p>Com o nome da pessoa, o produto e o link certo para ela concluir ou acessar a compra.</p>
+      </div>
+    </div>
+    <div class="stopline">
+      <span class="dot" aria-hidden="true"></span>
+      <p><strong>Comprou, parou.</strong> Quando a compra é aprovada, a pessoa é marcada como compradora daquele produto e todos os lembretes pendentes são cancelados.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head col">
+      <p class="eyebrow">Os cinco fluxos</p>
+      <h2>Veja o que a pessoa recebe em cada situação</h2>
+      <p class="muted">Os textos abaixo são exemplos para visualizar o fluxo. As mensagens finais são de vocês, e os intervalos são sugestões que a gente ajusta junto.</p>
+    </div>
+    <div class="demo">
+      <div>
+        <div class="tabs" role="tablist" aria-label="Fluxos" id="tabs"></div>
+        <div class="flow-info" id="info" role="tabpanel" aria-live="polite"></div>
+      </div>
+      <div class="phone-col">
+        <div class="phone">
+          <div class="phone-top">
+            <div class="avatar" aria-hidden="true">L</div>
+            <div><b>Número do lançamento</b><span>mensagem automática</span></div>
+          </div>
+          <div class="chat" id="chat"></div>
+        </div>
+        <p class="caption">As etiquetas tracejadas mostram o que acontece nos bastidores. Elas não aparecem para a pessoa.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="col">
+    <div class="section-head">
+      <p class="eyebrow">Regras para todos os fluxos</p>
+      <h2>Cuidados que já vêm configurados</h2>
+    </div>
+    <ul class="rules">
+      <li><h3>Horário de envio</h3><p>Nada sai de madrugada. A gente define a janela (por exemplo, das 8h às 21h) e o que cair fora dela espera a próxima.</p></li>
+      <li><h3>Sem mensagem em dobro</h3><p>A The Members já pode mandar avisos de pagamento pelo número dela. Conferimos o que está ligado no painel antes de ativar Pix, boleto e compra aprovada.</p></li>
+      <li><h3>Só quem iniciou a compra</h3><p>As mensagens vão apenas para quem deixou o telefone no checkout. Quem responder SAIR deixa de receber.</p></li>
+      <li><h3>Telefone no formato certo</h3><p>Números digitados sem DDD, com espaço ou sem o 9 são ajustados antes do envio, para a mensagem não se perder.</p></li>
+    </ul>
+  </section>
+
+  <section class="col">
+    <div class="section-head">
+      <p class="eyebrow">Entrega</p>
+      <h2>O que vocês recebem e o que eu preciso para começar</h2>
+    </div>
+    <div class="split">
+      <div style="display:grid;gap:14px;align-content:start">
+        <h3>Vocês recebem</h3>
+        <ul class="checks done">
+          <li>Avisos da The Members ligados nos cinco produtos</li>
+          <li>Os cinco fluxos montados no primeiro produto, com a regra de parada</li>
+          <li>Fluxos replicados nos outros quatro produtos depois da validação de vocês</li>
+          <li>Testes com compras de teste: todos os cenários no primeiro produto e conferência nos outros quatro</li>
+          <li>Um guia de uma página: onde fica cada fluxo e como trocar uma mensagem</li>
+        </ul>
+        <p class="out">Ficam para as próximas fases: e-mails, organização do CRM e agente de IA para atendimento.</p>
+      </div>
+      <div style="display:grid;gap:14px;align-content:start">
+        <h3>Preciso de vocês</h3>
+        <ul class="checks">
+          <li>Um usuário meu no painel da The Members (não a senha de vocês)</li>
+          <li>O número que vai enviar as mensagens, de preferência dedicado ao lançamento</li>
+          <li>As mensagens dos cinco fluxos</li>
+          <li>A data do lançamento</li>
+          <li>A janela de horário e os intervalos de cada fluxo</li>
+          <li>Quem aprova os fluxos do lado de vocês</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="col">
+    <div class="section-head">
+      <p class="eyebrow">Ferramenta</p>
+      <h2>Sem API oficial, como vocês preferem</h2>
+      <p class="muted">A assinatura fica no nome de vocês. Preços dos sites oficiais em 12/10/2026.</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Opção</th><th>Custo da ferramenta</th><th>Quem troca as mensagens</th><th>Observação</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>BotConversa Starter</strong><span class="pill">recomendada</span></td>
+            <td class="price">R$ 189/mês<br><span class="muted small">no plano anual</span></td>
+            <td>Vocês, num editor visual</td>
+            <td>Tem integração com a The Members. <span class="pill wait">confirmando</span><br><span class="muted small">Estou confirmando com o suporte se o plano Starter recebe os avisos do checkout. Vocês só assinam depois dessa resposta.</span></td>
+          </tr>
+          <tr>
+            <td><strong>ZapFácil</strong></td>
+            <td class="price">a partir de R$ 47/mês</td>
+            <td>Eu</td>
+            <td>Mais barata e mais técnica. Plano B se o BotConversa não atender.</td>
+          </tr>
+          <tr>
+            <td><strong>Solução própria</strong></td>
+            <td class="price">R$ 30 a R$ 160/mês<br><span class="muted small">servidor e conexão</span></td>
+            <td>Eu</td>
+            <td>Sob medida, sem assinatura de ferramenta. Desenvolvimento por R$ 1.500, no lugar dos R$ 700.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <b>Sobre o número</b>
+      <p>Sem a API oficial, o WhatsApp pode bloquear o número. O risco é menor com volume baixo, e diminui mais com um número dedicado ao lançamento, envio só para quem iniciou a compra e intervalo entre envios. Se o volume crescer bastante, a API oficial passa a ser o caminho seguro.</p>
+    </div>
+  </section>
+
+  <section class="col">
+    <div class="section-head">
+      <p class="eyebrow">Cronograma</p>
+      <h2>Até duas semanas a partir dos acessos e das mensagens</h2>
+      <p class="muted">Se o lançamento for antes disso, começo por carrinho abandonado e compra aprovada, que pesam mais na venda.</p>
+    </div>
+    <ol class="timeline">
+      <li><span class="when">Dia 1</span><span>Acessos, número, mapa dos produtos e mensagens</span><span class="who">DUO</span></li>
+      <li><span class="when">Dias 1–2</span><span>Ferramenta assinada, número conectado, avisos ligados em modo de teste</span><span class="who">DUO + Vinicius</span></li>
+      <li><span class="when">Dias 2–5</span><span>Os cinco fluxos no primeiro produto, com regra de parada e testes de todos os cenários</span><span class="who">Vinicius</span></li>
+      <li><span class="when">Dia 5</span><span>Validação de vocês no celular</span><span class="who">DUO</span></li>
+      <li><span class="when">Dias 6–8</span><span>Ajustes e réplica nos outros quatro produtos, com conferência de cada um</span><span class="who">Vinicius</span></li>
+      <li><span class="when">Dias 8–10</span><span>Tudo em modo ativo, guia de uma página e entrega</span><span class="who">Vinicius</span></li>
+    </ol>
+  </section>
+
+  <section class="col">
+    <div class="section-head">
+      <p class="eyebrow">Investimento</p>
+      <h2>Um valor fechado para a fase 1</h2>
+    </div>
+    <div class="price-block">
+      <div class="big">R$ 700</div>
+      <ul>
+        <li>Inclui tudo o que está em “Vocês recebem”, para até cinco fluxos nos cinco produtos</li>
+        <li>Não inclui a assinatura da ferramenta nem o chip do número, que ficam no nome de vocês</li>
+        <li>Forma de pagamento: a combinar</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="col">
+    Vinicius Gomes · Proposta da fase 1, 13/10/2026. O comportamento dos avisos da The Members segue a central de ajuda da plataforma e é confirmado nos testes com compras de teste.
+  </footer>
+</div>
+
+<script>
+(function () {
+  var WELCOME = "Boas-vindas ao {produto}, {nome}! Seu acesso já está liberado: {link da área de membros}. Qualquer dúvida, é só chamar aqui.";
+  var FLOWS = [
+    {
+      id: "carrinho", name: "Carrinho abandonado", event: "abandoned",
+      when: "A pessoa preenche os dados no checkout e sai sem finalizar.",
+      carries: "O link do checkout dela, com o produto já escolhido.",
+      stops: "Se a compra for aprovada.",
+      timing: "30 min e 24 h depois",
+      steps: [
+        { k: "event", time: "14:02", text: "Saiu do checkout sem finalizar" },
+        { k: "msg", time: "14:32", text: "Oi, {nome}! Vi que você começou a compra do {produto} e não chegou a finalizar. Seu pedido ficou salvo neste link: {link do checkout}" },
+        { k: "msg", time: "Amanhã, 14:02", text: "{nome}, seu link continua ativo: {link do checkout}. Ficou alguma dúvida? É só responder esta mensagem." }
+      ],
+      boughtAfter: 1, boughtTime: "14:40", boughtLabel: "Compra aprovada"
+    },
+    {
+      id: "pix", name: "Pix não pago", event: "transaction.pix_generated",
+      when: "A pessoa escolhe Pix, o código é gerado e o pagamento não cai.",
+      carries: "O link para concluir o pagamento.",
+      stops: "Assim que o Pix for pago.",
+      timing: "1 h depois",
+      note: "Pela documentação, o aviso da The Members não traz o código Pix. A mensagem leva o link de pagamento, e eu confirmo nos testes se dá para mandar o próprio código.",
+      steps: [
+        { k: "event", time: "10:15", text: "Pix gerado" },
+        { k: "msg", time: "11:15", text: "Oi, {nome}! Seu Pix do {produto} foi gerado, mas o pagamento ainda não apareceu por aqui. Para concluir: {link de pagamento}" }
+      ],
+      boughtAfter: 0, boughtTime: "10:31", boughtLabel: "Pix pago"
+    },
+    {
+      id: "boleto", name: "Boleto não pago", event: "transaction.boleto_generated",
+      when: "A pessoa gera o boleto e o pagamento ainda não foi compensado.",
+      carries: "O link do pedido, com a opção de pagar por Pix na hora.",
+      stops: "Quando o pagamento é compensado.",
+      timing: "1 e 2 dias depois",
+      note: "Boleto pode levar alguns dias úteis para compensar, então o texto já fala com quem pagou e ainda não aparece como pago. A linha digitável também não vem no aviso documentado; confirmo nos testes.",
+      steps: [
+        { k: "event", time: "Seg, 09:00", text: "Boleto gerado" },
+        { k: "msg", time: "Ter, 09:00", text: "Oi, {nome}! Passando para lembrar do boleto do {produto}. Se preferir, dá para pagar por Pix na hora: {link do pedido}. Se você já pagou, pode desconsiderar." },
+        { k: "msg", time: "Qua, 09:00", text: "{nome}, o link para concluir o pagamento do {produto} continua aqui: {link do pedido}" }
+      ],
+      boughtAfter: 1, boughtTime: "Ter, 15:20", boughtLabel: "Boleto compensado"
+    },
+    {
+      id: "cartao", name: "Cartão recusado", event: "transaction.failed",
+      when: "O pagamento no cartão é recusado.",
+      carries: "Um convite para tentar de novo, com outro cartão ou por Pix.",
+      stops: "Se a compra for aprovada.",
+      timing: "15 min depois",
+      steps: [
+        { k: "event", time: "20:10", text: "Cartão recusado" },
+        { k: "msg", time: "20:25", text: "Oi, {nome}! O pagamento do {produto} não passou no cartão. Às vezes é limite ou bloqueio do banco. Você pode tentar de novo com outro cartão ou pagar por Pix: {link do checkout}" }
+      ],
+      boughtAfter: 0, boughtTime: "20:18", boughtLabel: "Tentou de novo e a compra foi aprovada"
+    },
+    {
+      id: "aprovada", name: "Compra aprovada", event: "transaction.approved",
+      when: "O pagamento é aprovado.",
+      carries: "Boas-vindas e o link de acesso à área de membros.",
+      stops: "Envia uma vez só. Também marca a pessoa como compradora, o que cancela os lembretes dos outros fluxos.",
+      timing: "Na hora",
+      note: "A The Members pode já mandar um aviso de compra pelo número dela. Conferimos no painel para a pessoa não receber duas mensagens.",
+      steps: [
+        { k: "event", time: "14:40", text: "Compra aprovada", ok: true },
+        { k: "msg", time: "14:40", text: WELCOME }
+      ],
+      noToggle: true
+    }
+  ];
+
+  var current = FLOWS[0];
+  var bought = false;
+  var tabsEl = document.getElementById("tabs");
+  var infoEl = document.getElementById("info");
+  var chatEl = document.getElementById("chat");
+
+  function esc(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function fmt(s) {
+    return esc(s).replace(/\{([^}]+)\}/g, '<span class="var">$1</span>');
+  }
+
+  function renderTabs() {
+    tabsEl.innerHTML = "";
+    FLOWS.forEach(function (f) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "tab";
+      b.id = "tab-" + f.id;
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", f === current ? "true" : "false");
+      b.textContent = f.name;
+      b.addEventListener("click", function () { current = f; bought = false; render(); });
+      tabsEl.appendChild(b);
+    });
+  }
+
+  function renderInfo() {
+    var f = current;
+    var html = '<dl class="facts">' +
+      "<div><dt>Quando começa</dt><dd>" + esc(f.when) + "</dd></div>" +
+      "<div><dt>O que a mensagem leva</dt><dd>" + esc(f.carries) + "</dd></div>" +
+      "<div><dt>Quando para</dt><dd>" + esc(f.stops) + "</dd></div>" +
+      "<div><dt>Intervalo sugerido</dt><dd>" + esc(f.timing) + "</dd></div>" +
+      '<div><dt>Aviso da The Members</dt><dd class="mono">' + esc(f.event) + "</dd></div>" +
+      "</dl>";
+    if (f.note) html += '<div class="note"><b>Ponto de atenção</b><p>' + esc(f.note) + "</p></div>";
+    if (!f.noToggle) {
+      html += '<label class="switch" for="bought-toggle"><input type="checkbox" id="bought-toggle"' + (bought ? " checked" : "") + '><span class="track" aria-hidden="true"></span><span>Simular: a pessoa compra no meio do caminho</span></label>';
+    }
+    infoEl.innerHTML = html;
+    infoEl.setAttribute("aria-labelledby", "tab-" + f.id);
+    var t = document.getElementById("bought-toggle");
+    if (t) t.addEventListener("change", function () { bought = t.checked; renderChat(); });
+  }
+
+  function bubble(time, text, cancelled) {
+    return '<div class="bubble' + (cancelled ? " cancel" : "") + '"><div class="txt">' + fmt(text) + "</div><time>" +
+      (cancelled ? "cancelada: a pessoa já comprou" : esc(time)) + "</time></div>";
+  }
+  function event(text, ok) {
+    return '<div class="event' + (ok ? " ok" : "") + '">' + esc(text) + "</div>";
+  }
+
+  function renderChat() {
+    var f = current;
+    var out = [];
+    f.steps.forEach(function (s, i) {
+      var afterPurchase = bought && !f.noToggle && i > f.boughtAfter;
+      if (s.k === "event") out.push(event(s.time + " · " + s.text, s.ok));
+      else out.push(bubble(s.time, s.text, afterPurchase));
+      if (bought && !f.noToggle && i === f.boughtAfter) {
+        out.push(event(f.boughtTime + " · " + f.boughtLabel, true));
+        out.push(bubble(f.boughtTime, WELCOME, false));
+      }
+    });
+    if (bought && !f.noToggle) {
+      // Mensagens canceladas aparecem depois da compra, na ordem em que sairiam.
+      var cancelled = out.filter(function (h) { return h.indexOf("bubble cancel") !== -1; });
+      var rest = out.filter(function (h) { return h.indexOf("bubble cancel") === -1; });
+      out = rest.concat(cancelled);
+    }
+    chatEl.innerHTML = out.join("");
+  }
+
+  function render() {
+    renderTabs();
+    renderInfo();
+    renderChat();
+  }
+
+  tabsEl.addEventListener("keydown", function (e) {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    var i = FLOWS.indexOf(current);
+    i = e.key === "ArrowRight" ? (i + 1) % FLOWS.length : (i - 1 + FLOWS.length) % FLOWS.length;
+    current = FLOWS[i]; bought = false; render();
+    document.getElementById("tab-" + current.id).focus();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -10,28 +10,32 @@
 <meta property="og:description" content="Cinco fluxos automáticos ligados ao checkout da The Members. Fase 1, preço fechado.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Hanken+Grotesk:wght@400;500;600&display=swap">
 <style>
-/* Conceito: a régua de mensagens como uma timeline de ilha de edição. Página escura de sala de edição,
-   cores de clipe por tipo (aviso do checkout, mensagem, corte), cena 1 fixa com o cursor de reprodução no scroll. */
+/* Conceito: página editorial e clara, no tom do site da DUO (fundo claro, serifa fina, fotografia quente).
+   A régua de mensagens continua explicada como uma timeline de edição: aviso do checkout = marcador,
+   mensagem = clipe, compra aprovada = corte. Cores só com função: ocre (aviso), verde (mensagem), terracota (corte). */
 :root {
-  --bg: #111217;
-  --panel: #17181F;
-  --panel-2: #1E2029;
-  --line: #2B2E3A;
-  --ink: #ECEDF2;
-  --muted: #A4A8B6;
-  --dim: #737889;
-  --event: #E9A43C;
-  --msg: #4CC4A2;
-  --cut: #FF625A;
-  --duo: #B49BFF;
-  --vini: #5BA8FF;
-  --display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --bg: #FAF8F4;
+  --panel: #FFFFFF;
+  --panel-2: #F3EFE8;
+  --line: #E4DED3;
+  --ink: #1D1B18;
+  --muted: #57524A;
+  --dim: #716A5F;
+  --event: #9A6212;
+  --event-tint: #F6ECDA;
+  --msg: #1E7A55;
+  --msg-tint: #E2F0E8;
+  --cut: #B2452F;
+  --cut-tint: #F8E5DF;
+  --duo: #3D7186;
+  --vini: #3A3631;
+  --chat: #EFEAE2;
+  --serif: "Fraunces", Georgia, "Times New Roman", serif;
   --body: "Hanken Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
-  --r: 10px;
-  color-scheme: dark;
+  --r: 12px;
+  color-scheme: light;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -45,172 +49,164 @@ body {
   padding-inline: 24px;
   overflow-x: hidden;
 }
-body::after {
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: .07;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.9'/></svg>");
-}
 img { max-width: 100%; }
 p { margin: 0; }
-h1, h2, h3 { margin: 0; font-family: var(--display); font-weight: 800; text-transform: uppercase; line-height: .95; letter-spacing: .005em; text-wrap: balance; }
-h2 { font-size: clamp(2.2rem, 5vw, 3.7rem); }
-h3 { font-size: 1.55rem; line-height: 1; }
+h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 400; line-height: 1.05; letter-spacing: -.015em; text-wrap: balance; }
+h2 { font-size: clamp(2rem, 4.2vw, 3.2rem); }
+h3 { font-size: 1.45rem; font-weight: 500; line-height: 1.15; letter-spacing: -.01em; }
 .wrap { max-width: 1120px; margin: 0 auto; }
-.read { max-width: 64ch; color: var(--muted); }
-.mono { font-family: var(--mono); }
+.read { max-width: 62ch; color: var(--muted); font-size: 1.05rem; }
 :focus-visible { outline: 2px solid var(--msg); outline-offset: 3px; }
 
-/* HUD: timecode do "filme" = progresso da página */
+/* Rótulos pequenos: um estilo só para a página inteira */
+.eyebrow, .scene-label, .scroll-hint, .slate-grid dt, .tool dt, .g-label span, .credits dt, .callout b, .big small, .tl-labels, .pill {
+  font-family: var(--body); font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+}
+
+/* Barra fixa com o progresso da leitura */
 .hud {
   position: fixed; top: 0; left: 0; right: 0; z-index: 50;
   padding: calc(env(safe-area-inset-top, 0px) + 12px) 24px 12px;
   display: flex; justify-content: space-between; align-items: center; gap: 16px;
-  font-family: var(--mono); font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
-  background: linear-gradient(var(--bg) 55%, transparent);
+  font-size: .82rem; color: var(--muted);
+  background: rgba(250, 248, 244, .94); border-bottom: 1px solid var(--line);
 }
-.hud b { color: var(--ink); font-weight: 500; }
-.rec { display: inline-flex; align-items: center; gap: 8px; }
-.rec::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--cut); }
-.tc { font-variant-numeric: tabular-nums; color: var(--ink); }
-.progress { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line); }
+.hud b { color: var(--ink); font-weight: 600; letter-spacing: .04em; }
+.progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; }
 .progress i { position: absolute; inset: 0; background: var(--msg); transform-origin: left; transform: scaleX(0); }
 
 /* Abertura */
-.hero { padding-block: 120px 96px; display: grid; gap: 48px; }
-.eyebrow, .scene-label {
-  font-family: var(--mono); font-size: .76rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
-  display: flex; align-items: center; gap: 10px;
-}
-.scene-label::before { content: ""; width: 10px; height: 10px; border-radius: 2px; background: var(--c, var(--msg)); }
-.hero h1 { font-size: clamp(3rem, 8.6vw, 7.4rem); line-height: .9; max-width: 15ch; }
-.hero h1 .l2 { display: block; color: var(--msg); margin-top: .12em; }
-.w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .06em; margin-bottom: -.06em; }
+.hero { padding-block: 140px 96px; display: grid; gap: 44px; }
+.eyebrow { font-size: .74rem; color: var(--dim); }
+.scene-label { display: flex; align-items: baseline; gap: 12px; font-size: .74rem; color: var(--dim); }
+.scene-label .num { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.15rem; letter-spacing: 0; text-transform: none; color: var(--ink); }
+.hero h1 { font-size: clamp(2.5rem, 6.2vw, 5.4rem); font-weight: 350; line-height: 1.02; max-width: 17ch; }
+.hero h1 .l2 { display: block; font-style: italic; color: var(--msg); margin-top: .1em; }
+.w { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 .08em .12em 0; margin: 0 -.08em -.12em 0; }
 .w > span { display: inline-block; }
 .hero-row { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 48px; align-items: end; }
-.hero-copy { display: grid; gap: 20px; }
-.hero-copy p { font-size: 1.15rem; color: var(--muted); max-width: 44ch; }
-.scroll-hint { font-family: var(--mono); font-size: .76rem; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); display: flex; align-items: center; gap: 10px; }
-.scroll-hint::after { content: ""; width: 1px; height: 28px; background: linear-gradient(var(--dim), transparent); }
+.hero-copy { display: grid; gap: 22px; }
+.hero-copy p { font-size: 1.18rem; color: var(--muted); max-width: 42ch; }
+.scroll-hint { font-size: .72rem; color: var(--dim); display: flex; align-items: center; gap: 12px; }
+.scroll-hint::after { content: ""; width: 32px; height: 1px; background: var(--dim); }
 
-/* Claquete */
+/* Ficha do projeto */
 .slate { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); }
-.sticks { position: relative; height: 46px; background: var(--bg); border-radius: var(--r) var(--r) 0 0; }
-.stick { position: absolute; left: 0; right: 0; height: 20px; background: repeating-linear-gradient(-55deg, var(--ink) 0 16px, #23252F 16px 32px); }
-.stick.top { top: 2px; transform-origin: 0 100%; }
-.stick.base { bottom: 2px; }
 .slate-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; }
-.slate-grid div { padding: 14px 16px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); display: grid; gap: 4px; min-width: 0; }
+.slate-grid div { padding: 18px 20px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); display: grid; gap: 6px; min-width: 0; }
+.slate-grid div:nth-child(-n+3) { border-top: 0; }
 .slate-grid div:nth-child(3n+1) { border-left: 0; }
-.slate-grid dt { font-family: var(--mono); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
-.slate-grid dd { margin: 0; font-family: var(--display); font-size: 1.5rem; font-weight: 700; line-height: 1.05; text-transform: uppercase; font-variant-numeric: tabular-nums; }
-.slate-grid dd small { display: block; font-family: var(--body); font-size: .78rem; font-weight: 500; text-transform: none; color: var(--muted); margin-top: 2px; }
+.slate-grid dt { font-size: .66rem; color: var(--dim); }
+.slate-grid dd { margin: 0; font-family: var(--serif); font-size: 1.45rem; font-weight: 400; line-height: 1.1; font-variant-numeric: lining-nums tabular-nums; }
+.slate-grid dd small { display: block; font-family: var(--body); font-size: .8rem; color: var(--muted); margin-top: 3px; }
 
 /* Seções */
-.scene { padding-block: 96px; display: grid; gap: 36px; border-top: 1px solid var(--line); }
-.scene-head { display: grid; gap: 16px; }
+.scene { padding-block: 104px; display: grid; gap: 40px; border-top: 1px solid var(--line); }
+.scene-head { display: grid; gap: 18px; }
 
 /* Cena 1: palco fixo */
 .stage { display: grid; gap: 24px; }
 .stage-top { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 40px; align-items: center; }
 .beats { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
 .beats li { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 16px; align-items: baseline; }
-.beats time { font-family: var(--mono); font-size: .82rem; color: var(--event); font-variant-numeric: tabular-nums; }
+.beats time { font-weight: 600; font-size: .9rem; color: var(--event); font-variant-numeric: tabular-nums; }
 .beats li:nth-child(3) time { color: var(--cut); }
 .beats li:nth-child(4) time { color: var(--dim); }
-.beats p { font-size: 1.02rem; }
-.phone { background: var(--panel); border: 1px solid var(--line); border-radius: 26px; padding: 8px; width: 100%; max-width: 350px; justify-self: center; }
+.beats p { font-size: 1.04rem; }
+.phone { background: var(--panel); border: 1px solid var(--line); border-radius: 28px; padding: 8px; width: 100%; max-width: 350px; justify-self: center; box-shadow: 0 18px 40px -24px rgba(29, 27, 24, .28); }
 .phone-top { display: flex; align-items: center; gap: 10px; padding: 8px 10px 10px; }
-.avatar { width: 30px; height: 30px; border-radius: 50%; background: #1D3A33; color: var(--msg); display: grid; place-items: center; font-family: var(--display); font-weight: 800; }
-.phone-top b { display: block; font-size: .86rem; line-height: 1.2; }
-.phone-top span { font-size: .72rem; color: var(--dim); }
-.chat { background: #0C0D11; border-radius: 19px; padding: 14px 10px; display: grid; gap: 8px; align-content: start; }
-.bubble { background: var(--panel-2); border-radius: 4px 13px 13px 13px; padding: 8px 11px 5px; max-width: 92%; justify-self: start; font-size: .82rem; line-height: 1.45; }
-.bubble time { display: block; text-align: right; font-family: var(--mono); font-size: .64rem; color: var(--dim); margin-top: 2px; }
-.var { font-family: var(--mono); font-size: .86em; color: var(--msg); background: #173029; padding: 0 4px; border-radius: 3px; white-space: nowrap; }
-.sys { justify-self: center; font-family: var(--mono); font-size: .66rem; color: var(--event); border: 1px dashed currentColor; border-radius: 999px; padding: 2px 9px; text-align: center; }
+.avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--msg-tint); color: var(--msg); display: grid; place-items: center; font-family: var(--serif); font-weight: 500; }
+.phone-top b { display: block; font-size: .88rem; font-weight: 600; line-height: 1.2; }
+.phone-top span { font-size: .74rem; color: var(--dim); }
+.chat { background: var(--chat); border-radius: 20px; padding: 14px 10px; display: grid; gap: 8px; align-content: start; }
+.bubble { background: var(--panel); border-radius: 4px 14px 14px 14px; padding: 8px 11px 6px; max-width: 92%; justify-self: start; font-size: .84rem; line-height: 1.45; box-shadow: 0 1px .5px rgba(11, 20, 26, .13); }
+.bubble time { display: block; text-align: right; font-size: .68rem; color: var(--dim); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.var { font-size: .92em; font-weight: 500; color: var(--msg); background: var(--msg-tint); padding: 0 5px; border-radius: 4px; white-space: nowrap; }
+.sys { justify-self: center; font-size: .7rem; font-weight: 500; color: var(--event); background: rgba(255, 255, 255, .7); border: 1px dashed currentColor; border-radius: 999px; padding: 2px 10px; text-align: center; }
 .sys.ok { color: var(--msg); }
 .sys.cut { color: var(--cut); }
-.phone-note { font-size: .78rem; color: var(--dim); text-align: center; margin-top: 10px; }
+.phone-note { font-size: .8rem; color: var(--dim); text-align: center; margin-top: 12px; }
 
 .tl-wrap { overflow-x: auto; overflow-y: hidden; }
-.tl { min-width: 640px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 16px 26px; display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 0 12px; }
-.tl-labels { display: grid; grid-template-rows: 24px 42px 42px; row-gap: 8px; font-family: var(--mono); font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+.tl { min-width: 640px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 18px 28px; display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 0 12px; }
+.tl-labels { display: grid; grid-template-rows: 24px 42px 42px; row-gap: 8px; font-size: .66rem; color: var(--dim); }
 .tl-labels span { display: flex; align-items: center; }
 .tl-area { position: relative; display: grid; grid-template-rows: 24px 42px 42px; row-gap: 8px; }
 .ruler { position: relative; border-bottom: 1px solid var(--line); }
-.tick { position: absolute; bottom: 0; height: 8px; border-left: 1px solid var(--dim); }
-.tick span { position: absolute; bottom: 9px; left: 3px; font-family: var(--mono); font-size: .64rem; color: var(--dim); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.break { position: absolute; top: 0; bottom: 0; left: 72.5%; width: 3.5%; background: repeating-linear-gradient(90deg, transparent 0 4px, var(--line) 4px 5px); opacity: .7; }
+.tick { position: absolute; bottom: 0; height: 8px; border-left: 1px solid #C9C1B4; }
+.tick span { position: absolute; bottom: 9px; left: 3px; font-size: .68rem; color: var(--dim); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.break { position: absolute; top: 0; bottom: 0; left: 72.5%; width: 3.5%; background: repeating-linear-gradient(90deg, transparent 0 4px, var(--line) 4px 5px); }
 .lane { position: relative; background: var(--panel-2); border-radius: 6px; }
 .mk { position: absolute; top: 50%; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; transform: rotate(45deg); background: var(--event); }
 .mk.buy { background: var(--cut); }
-.mk-l { position: absolute; top: 50%; transform: translateY(-50%); font-family: var(--mono); font-size: .64rem; white-space: nowrap; color: var(--event); padding-left: 12px; }
+.mk-l { position: absolute; top: 50%; transform: translateY(-50%); font-size: .7rem; font-weight: 500; white-space: nowrap; color: var(--event); padding-left: 12px; }
 .mk-l.buy { color: var(--cut); }
-.clip { position: absolute; top: 6px; bottom: 6px; border-radius: 4px; background: var(--msg); color: #0B201A; font-family: var(--mono); font-size: .64rem; font-weight: 500; display: flex; align-items: center; padding: 0 7px; white-space: nowrap; overflow: hidden; }
-.clip.sched { background: transparent; color: var(--msg); border: 1px dashed var(--msg); }
+.clip { position: absolute; top: 6px; bottom: 6px; border-radius: 4px; background: var(--msg); color: #FFFFFF; font-size: .7rem; font-weight: 600; display: flex; align-items: center; padding: 0 7px; white-space: nowrap; overflow: hidden; }
+.clip.sched { background: var(--panel); color: var(--msg); border: 1px dashed var(--msg); }
 .clip .strike { position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; background: var(--cut); }
-.tag-cancel { position: absolute; top: 100%; margin-top: 2px; font-family: var(--mono); font-size: .6rem; color: var(--cut); white-space: nowrap; }
+.tag-cancel { position: absolute; top: 100%; margin-top: 2px; font-size: .66rem; font-weight: 500; color: var(--cut); white-space: nowrap; }
 .cut-line { position: absolute; top: 0; bottom: 0; left: 51.45%; width: 2px; margin-left: -1px; background: var(--cut); }
-.cut-line span { position: absolute; bottom: -15px; left: 6px; font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; text-transform: uppercase; color: var(--cut); background: var(--panel); padding: 0 3px; }
+.cut-line span { position: absolute; bottom: -16px; left: 6px; font-size: .62rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--cut); background: var(--panel); padding: 0 3px; }
 .playhead { position: absolute; top: -4px; bottom: -4px; left: 100%; width: 2px; margin-left: -1px; background: var(--ink); z-index: 2; }
 .playhead::before { content: ""; position: absolute; top: 0; left: -5px; width: 12px; height: 9px; background: var(--ink); clip-path: polygon(0 0, 100% 0, 100% 55%, 50% 100%, 0 55%); }
-.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: .8rem; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: .84rem; color: var(--muted); }
 .legend span { display: inline-flex; align-items: center; gap: 8px; }
 .legend i { width: 10px; height: 10px; border-radius: 2px; background: var(--c); }
 .legend i.d { transform: rotate(45deg) scale(.85); border-radius: 0; }
 
-/* Cena 2: faixas */
+/* Cena 2: os cinco fluxos */
 .flows { display: grid; }
-.flow { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1fr) minmax(0, 1.05fr); gap: 32px; padding-block: 28px; border-top: 1px solid var(--line); align-items: start; }
+.flow { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1fr) minmax(0, 1.05fr); gap: 32px; padding-block: 30px; border-top: 1px solid var(--line); align-items: start; }
 .flow:last-child { border-bottom: 1px solid var(--line); }
-.flow-name { display: grid; gap: 10px; }
-.flow-name h3 { font-size: clamp(1.7rem, 3vw, 2.2rem); }
-.flow-name p { color: var(--muted); font-size: .97rem; }
-.code { font-family: var(--mono); font-size: .72rem; color: var(--dim); }
+.flow-name { display: grid; gap: 8px; }
+.flow-name h3 { font-size: clamp(1.5rem, 2.6vw, 1.95rem); }
+.flow-name p { color: var(--muted); font-size: .98rem; }
 .seq { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.chip { font-family: var(--mono); font-size: .72rem; padding: 4px 10px; border-radius: 4px; white-space: nowrap; }
-.chip.ev { border: 1px solid var(--event); color: var(--event); }
-.chip.ms { background: var(--msg); color: #0B201A; }
-.chip.st { border: 1px solid var(--cut); color: var(--cut); }
-.arrow { width: 14px; height: 1px; background: var(--dim); }
+.chip { font-size: .76rem; font-weight: 600; padding: 4px 11px; border-radius: 999px; white-space: nowrap; }
+.chip.ev { color: var(--event); background: var(--event-tint); }
+.chip.ms { color: var(--msg); background: var(--msg-tint); }
+.chip.st { color: var(--cut); background: var(--cut-tint); }
+.arrow { width: 14px; height: 1px; background: #BDB5A8; }
 .flow-mid { display: grid; gap: 14px; }
-.flow-mid .stop { font-size: .95rem; color: var(--muted); }
-.note { font-size: .86rem; color: var(--event); border-left: 2px solid var(--event); padding-left: 12px; }
-.flow .bubble { max-width: 100%; font-size: .9rem; }
+.flow-mid .stop { font-size: .96rem; color: var(--muted); }
+.note { font-size: .88rem; color: var(--muted); border-left: 2px solid var(--event); padding-left: 12px; }
+.flow .bubble { max-width: 100%; font-size: .92rem; border: 1px solid var(--line); box-shadow: none; }
 
 /* Cena 3: cuidados */
 .rules { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); }
-.rules li { padding: 24px 28px 26px 0; border-bottom: 1px solid var(--line); display: grid; gap: 8px; }
+.rules li { padding: 26px 28px 28px 0; border-bottom: 1px solid var(--line); display: grid; gap: 8px; }
 .rules li:nth-child(odd) { border-right: 1px solid var(--line); }
 .rules li:nth-child(even) { padding-left: 28px; padding-right: 0; }
-.rules p { color: var(--muted); font-size: .97rem; }
+.rules h3 { font-size: 1.35rem; }
+.rules p { color: var(--muted); font-size: .98rem; }
 
 /* Cena 4: ferramenta */
 .tools { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.tool { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; display: grid; gap: 14px; align-content: start; }
-.tool.rec-tool { border-color: var(--msg); }
+.tool { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 24px; display: grid; gap: 14px; align-content: start; }
+.tool.rec-tool { border: 1.5px solid var(--msg); }
 .tool-top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
-.pill { font-family: var(--mono); font-size: .66rem; letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: #173029; color: var(--msg); white-space: nowrap; }
-.pill.wait { background: #33280F; color: var(--event); }
-.price { font-family: var(--display); font-size: 2.2rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
-.price small { display: block; font-family: var(--body); font-size: .8rem; font-weight: 500; color: var(--muted); margin-top: 4px; }
-.tool dl { margin: 0; display: grid; gap: 10px; font-size: .92rem; }
-.tool dt { font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+.pill { font-size: .64rem; padding: 3px 9px; border-radius: 999px; background: var(--msg-tint); color: var(--msg); white-space: nowrap; }
+.pill.wait { background: var(--event-tint); color: var(--event); }
+.price { font-family: var(--serif); font-size: clamp(1.7rem, 2.4vw, 2.1rem); font-weight: 400; line-height: 1; font-variant-numeric: lining-nums; white-space: nowrap; }
+.price small { display: block; font-family: var(--body); font-size: .82rem; color: var(--muted); margin-top: 6px; white-space: normal; }
+.tool dl { margin: 0; display: grid; gap: 10px; font-size: .94rem; }
+.tool dt { font-size: .64rem; color: var(--dim); }
 .tool dd { margin: 2px 0 0; color: var(--muted); }
-.callout { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: start; background: var(--panel); border-radius: var(--r); padding: 18px 20px; font-size: .95rem; color: var(--muted); }
-.callout b { font-family: var(--mono); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--event); padding-top: 3px; }
+.callout { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: start; background: var(--panel-2); border-radius: var(--r); padding: 20px 22px; font-size: .97rem; color: var(--muted); }
+.callout b { font-size: .7rem; color: var(--event); padding-top: 3px; }
 
 /* Cena 5: cronograma */
 .gantt { display: grid; gap: 10px; }
 .g-row { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 20px; align-items: center; }
-.g-label { display: grid; gap: 2px; font-size: .92rem; }
-.g-label span { font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
-.g-track { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); height: 30px; background: repeating-linear-gradient(90deg, var(--panel-2) 0 calc(10% - 1px), var(--bg) calc(10% - 1px) 10%); border-radius: 4px; }
+.g-label { display: grid; gap: 2px; font-size: .94rem; }
+.g-label span { font-size: .64rem; color: var(--dim); }
+.g-track { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); height: 30px; background: repeating-linear-gradient(90deg, var(--panel-2) 0 calc(10% - 2px), var(--bg) calc(10% - 2px) 10%); border-radius: 4px; }
 .bar { grid-row: 1; height: 100%; border-radius: 4px; transform-origin: left center; }
 .bar.duo { background: var(--duo); }
 .bar.vini { background: var(--vini); }
 .bar.both { background: repeating-linear-gradient(-45deg, var(--duo) 0 8px, var(--vini) 8px 16px); }
 .g-days .g-track { background: none; height: auto; }
-.g-days .g-track span { font-family: var(--mono); font-size: .66rem; color: var(--dim); text-align: center; }
+.g-days .g-track span { font-size: .7rem; color: var(--dim); text-align: center; font-variant-numeric: tabular-nums; }
 .g-note { color: var(--muted); font-size: .95rem; }
 
 /* Cena 6: entrega */
@@ -218,29 +214,31 @@ h3 { font-size: 1.55rem; line-height: 1; }
 .list-col { display: grid; gap: 16px; align-content: start; }
 .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .checks li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; }
-.checks li::before { content: ""; width: 12px; height: 12px; margin-top: 7px; border-radius: 2px; background: var(--msg); }
+.checks li::before { content: ""; width: 12px; height: 12px; margin-top: 7px; border-radius: 50%; background: var(--msg); }
 .checks.need li::before { background: transparent; border: 1.5px solid var(--event); }
 .out { font-size: .92rem; color: var(--dim); border-top: 1px solid var(--line); padding-top: 14px; }
 
 /* Final */
 .final { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: end; }
-.big { font-family: var(--display); font-weight: 800; font-size: clamp(5rem, 15vw, 11rem); line-height: .82; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
-.big small { display: block; font-family: var(--mono); font-size: .8rem; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: 18px; }
+.big { font-family: var(--serif); font-weight: 300; font-size: clamp(4.5rem, 12vw, 9rem); line-height: .9; letter-spacing: -.03em; font-variant-numeric: lining-nums; }
+.big small { display: block; font-size: .74rem; color: var(--dim); margin-top: 18px; }
 .terms-list { margin: 0; padding-left: 18px; display: grid; gap: 8px; color: var(--muted); }
 .next { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: s; border-top: 1px solid var(--line); }
 .next li { counter-increment: s; display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 16px; padding-block: 18px; border-bottom: 1px solid var(--line); align-items: baseline; font-size: 1.05rem; }
-.next li::before { content: counter(s, decimal-leading-zero); font-family: var(--mono); font-size: .8rem; color: var(--msg); }
+.next li::before { content: counter(s, decimal-leading-zero); font-family: var(--serif); font-style: italic; font-size: 1.15rem; color: var(--msg); }
 
 .credits { padding-block: 96px 120px; border-top: 1px solid var(--line); display: grid; gap: 32px; justify-items: center; text-align: center; }
 .credits dl { margin: 0; display: grid; gap: 14px; }
-.credits dt { font-family: var(--mono); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+.credits dt { font-size: .64rem; color: var(--dim); }
 .credits dd { margin: 2px 0 0; font-size: 1.05rem; }
-.fim { font-family: var(--display); font-weight: 800; font-size: 3rem; letter-spacing: .3em; text-transform: uppercase; color: var(--dim); padding-left: .3em; }
-.fine { max-width: 60ch; font-size: .8rem; color: var(--dim); }
+.credits dd a { color: inherit; text-decoration: underline; text-decoration-color: var(--msg); text-underline-offset: 4px; overflow-wrap: anywhere; }
+.credits dd a:hover { color: var(--msg); }
+.fim { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 2.6rem; color: var(--dim); }
+.fine { max-width: 60ch; font-size: .82rem; color: var(--dim); }
 
 /* Desktop alto: a cena 1 ocupa a tela enquanto fica fixa */
 @media (min-width: 900px) and (min-height: 620px) {
-  .stage { min-height: 100vh; align-content: center; padding-block: 64px 24px; }
+  .stage { min-height: 100vh; align-content: center; padding-block: 72px 24px; }
 }
 @media (max-width: 899px) {
   .hero-row, .stage-top, .flow, .split, .final, .tools { grid-template-columns: minmax(0, 1fr); }
@@ -254,11 +252,13 @@ h3 { font-size: 1.55rem; line-height: 1; }
   body { padding-inline: 16px; font-size: 16px; }
   .hud { padding-inline: 16px; }
   .hud .who { display: none; }
-  .hero { padding-block: 96px 64px; gap: 36px; }
+  .hero { padding-block: 104px 64px; gap: 36px; }
   .scene { padding-block: 72px; }
   .slate-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .slate-grid div:nth-child(3n+1) { border-left: 1px solid var(--line); }
-  .slate-grid div:nth-child(odd) { border-left: 0; }
+  .slate-grid div:nth-child(3) { border-top: 1px solid var(--line); border-left: 0; }
+  .slate-grid div:nth-child(4) { border-left: 1px solid var(--line); }
+  .slate-grid div:nth-child(5) { border-left: 0; }
+  .slate-grid div:nth-child(6) { border-left: 1px solid var(--line); }
   .beats li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .callout { grid-template-columns: minmax(0, 1fr); gap: 6px; }
 }
@@ -270,8 +270,8 @@ h3 { font-size: 1.55rem; line-height: 1; }
 <body>
 
 <div class="hud" aria-hidden="true">
-  <span class="rec"><b>DUO</b>&nbsp;×&nbsp;<span class="who">Vinicius Gomes · </span>proposta fase 1</span>
-  <span>TC <span class="tc" id="tc">00:00:00:00</span></span>
+  <span><b>DUO</b>&nbsp;×&nbsp;Vinicius Gomes</span>
+  <span><span class="who">Proposta · </span>fase 1</span>
   <span class="progress"><i id="progress"></i></span>
 </div>
 
@@ -286,11 +286,10 @@ h3 { font-size: 1.55rem; line-height: 1; }
         <span class="scroll-hint">Role para ver a régua funcionando</span>
       </div>
       <div class="slate" data-hero-fade>
-        <div class="sticks" aria-hidden="true"><span class="stick top"></span><span class="stick base"></span></div>
         <dl class="slate-grid">
           <div><dt>Projeto</dt><dd>Régua de WhatsApp<small>fase 1</small></dd></div>
           <div><dt>Cliente</dt><dd>DUO<small>cose creative</small></dd></div>
-          <div><dt>Data</dt><dd>13·10·2026<small>proposta</small></dd></div>
+          <div><dt>Data</dt><dd>13/10/2026<small>proposta</small></dd></div>
           <div><dt>Investimento</dt><dd>R$ 700<small>preço fechado</small></dd></div>
           <div><dt>Escopo</dt><dd>5 produtos<small>até 5 fluxos, mesmo valor</small></dd></div>
           <div><dt>Prazo</dt><dd>2 semanas<small>após acessos e copies</small></dd></div>
@@ -301,7 +300,7 @@ h3 { font-size: 1.55rem; line-height: 1; }
 
   <section class="scene" aria-labelledby="c1">
     <div class="scene-head">
-      <p class="scene-label" style="--c: var(--event)">Cena 1 · Como funciona</p>
+      <p class="scene-label"><span class="num">01</span>Como funciona</p>
       <h2 id="c1">Uma régua de mensagens é uma timeline de edição</h2>
       <p class="read">Cada aviso do checkout é um marcador. Cada mensagem é um clipe com hora para entrar. Quando a compra é aprovada, entra o corte, e o que ainda não saiu é removido da timeline. Abaixo, um carrinho abandonado do começo ao fim.</p>
     </div>
@@ -370,13 +369,13 @@ h3 { font-size: 1.55rem; line-height: 1; }
 
   <section class="scene" aria-labelledby="c2">
     <div class="scene-head">
-      <p class="scene-label" style="--c: var(--msg)">Cena 2 · Os cinco fluxos</p>
+      <p class="scene-label"><span class="num">02</span>Os cinco fluxos</p>
       <h2 id="c2">Cinco faixas, a mesma regra de corte</h2>
       <p class="read">Montados no primeiro produto, validados por vocês no celular e replicados nos outros quatro. Os textos são exemplos para visualizar; as mensagens finais são de vocês, e os intervalos a gente ajusta junto.</p>
     </div>
     <div class="flows">
       <article class="flow">
-        <div class="flow-name"><h3>Carrinho abandonado</h3><p>A pessoa preenche os dados e sai sem finalizar.</p><span class="code">aviso: abandoned</span></div>
+        <div class="flow-name"><h3>Carrinho abandonado</h3><p>A pessoa preenche os dados e sai sem finalizar.</p></div>
         <div class="flow-mid">
           <div class="seq"><span class="chip ev">aviso</span><i class="arrow"></i><span class="chip ms">+30 min</span><i class="arrow"></i><span class="chip ms">+24 h</span></div>
           <p class="stop">Para se a compra for aprovada.</p>
@@ -384,7 +383,7 @@ h3 { font-size: 1.55rem; line-height: 1; }
         <div class="bubble"><p>Oi, <span class="var">nome</span>! Vi que você começou a compra do <span class="var">produto</span> e não chegou a finalizar. Seu pedido ficou salvo aqui: <span class="var">link do checkout</span></p></div>
       </article>
       <article class="flow">
-        <div class="flow-name"><h3>Pix não pago</h3><p>O Pix é gerado e o pagamento não cai.</p><span class="code">aviso: transaction.pix_generated</span></div>
+        <div class="flow-name"><h3>Pix não pago</h3><p>O Pix é gerado e o pagamento não cai.</p></div>
         <div class="flow-mid">
           <div class="seq"><span class="chip ev">aviso</span><i class="arrow"></i><span class="chip ms">+1 h</span></div>
           <p class="stop">Para assim que o Pix for pago.</p>
@@ -393,7 +392,7 @@ h3 { font-size: 1.55rem; line-height: 1; }
         <div class="bubble"><p>Oi, <span class="var">nome</span>! Seu Pix do <span class="var">produto</span> foi gerado, mas o pagamento ainda não apareceu por aqui. Para concluir: <span class="var">link de pagamento</span></p></div>
       </article>
       <article class="flow">
-        <div class="flow-name"><h3>Boleto não pago</h3><p>O boleto é gerado e ainda não compensou.</p><span class="code">aviso: transaction.boleto_generated</span></div>
+        <div class="flow-name"><h3>Boleto não pago</h3><p>O boleto é gerado e ainda não compensou.</p></div>
         <div class="flow-mid">
           <div class="seq"><span class="chip ev">aviso</span><i class="arrow"></i><span class="chip ms">+1 dia</span><i class="arrow"></i><span class="chip ms">+2 dias</span></div>
           <p class="stop">Para quando o pagamento compensa.</p>
@@ -402,7 +401,7 @@ h3 { font-size: 1.55rem; line-height: 1; }
         <div class="bubble"><p>Oi, <span class="var">nome</span>! Passando para lembrar do boleto do <span class="var">produto</span>. Se preferir, dá para pagar por Pix na hora: <span class="var">link do pedido</span>. Se você já pagou, pode desconsiderar.</p></div>
       </article>
       <article class="flow">
-        <div class="flow-name"><h3>Cartão recusado</h3><p>O pagamento no cartão é recusado.</p><span class="code">aviso: transaction.failed</span></div>
+        <div class="flow-name"><h3>Cartão recusado</h3><p>O pagamento no cartão é recusado.</p></div>
         <div class="flow-mid">
           <div class="seq"><span class="chip ev">aviso</span><i class="arrow"></i><span class="chip ms">+15 min</span></div>
           <p class="stop">Para se a compra for aprovada.</p>
@@ -410,7 +409,7 @@ h3 { font-size: 1.55rem; line-height: 1; }
         <div class="bubble"><p>Oi, <span class="var">nome</span>! O pagamento do <span class="var">produto</span> não passou no cartão. Às vezes é limite ou bloqueio do banco. Dá para tentar de novo com outro cartão ou pagar por Pix: <span class="var">link do checkout</span></p></div>
       </article>
       <article class="flow">
-        <div class="flow-name"><h3>Compra aprovada</h3><p>O pagamento é aprovado.</p><span class="code">aviso: transaction.approved</span></div>
+        <div class="flow-name"><h3>Compra aprovada</h3><p>O pagamento é aprovado.</p></div>
         <div class="flow-mid">
           <div class="seq"><span class="chip ev">aviso</span><i class="arrow"></i><span class="chip ms">na hora</span><i class="arrow"></i><span class="chip st">corta os outros</span></div>
           <p class="stop">Envia uma vez só e marca a pessoa como compradora, o que cancela os lembretes pendentes dos outros fluxos.</p>
@@ -423,7 +422,7 @@ h3 { font-size: 1.55rem; line-height: 1; }
 
   <section class="scene" aria-labelledby="c3">
     <div class="scene-head">
-      <p class="scene-label" style="--c: var(--event)">Cena 3 · Cuidados</p>
+      <p class="scene-label"><span class="num">03</span>Cuidados</p>
       <h2 id="c3">O que já vem configurado em todos os fluxos</h2>
     </div>
     <ul class="rules">
@@ -436,20 +435,20 @@ h3 { font-size: 1.55rem; line-height: 1; }
 
   <section class="scene" aria-labelledby="c4">
     <div class="scene-head">
-      <p class="scene-label" style="--c: var(--msg)">Cena 4 · Ferramenta</p>
+      <p class="scene-label"><span class="num">04</span>Ferramenta</p>
       <h2 id="c4">Sem API oficial, como vocês preferem</h2>
-      <p class="read">A assinatura fica no nome de vocês. Preços conferidos nos sites oficiais em 12/10/2026.</p>
+      <p class="read">A assinatura fica no nome de vocês. Preços conferidos nos sites oficiais em 13/10/2026.</p>
     </div>
     <div class="tools">
       <article class="tool rec-tool" data-reveal>
-        <div class="tool-top"><h3>BotConversa Starter</h3><span class="pill">recomendada</span></div>
-        <p class="price">R$ 189/mês<small>no plano anual</small></p>
+        <div class="tool-top"><h3>BotConversa Pro</h3><span class="pill">recomendada</span></div>
+        <p class="price">R$ 199/mês<small>no plano anual · R$ 299 no mensal</small></p>
         <dl>
           <div><dt>Quem troca as mensagens</dt><dd>Vocês, num editor visual</dd></div>
-          <div><dt>Por quê</dt><dd>Tem integração com a The Members.</dd></div>
+          <div><dt>Por quê</dt><dd>Recebe os avisos do checkout da The Members, com o WhatsApp conectado por QR Code.</dd></div>
         </dl>
-        <p><span class="pill wait">confirmando</span></p>
-        <p class="g-note">Estou confirmando com o suporte se o plano Starter recebe os avisos do checkout. Vocês só assinam depois dessa resposta.</p>
+        <p><span class="pill">confirmado com o BotConversa</span></p>
+        <p class="g-note">O Starter (R$ 189) não recebe os avisos do checkout, então não serve. O comercial do BotConversa confirmou por escrito que o Pro recebe os avisos com o WhatsApp conectado por QR Code, até 25 mil por mês. Se algo não funcionar, a garantia devolve o valor.</p>
       </article>
       <article class="tool" data-reveal>
         <div class="tool-top"><h3>ZapFácil</h3><span class="pill wait">plano B</span></div>
@@ -476,7 +475,7 @@ h3 { font-size: 1.55rem; line-height: 1; }
 
   <section class="scene" aria-labelledby="c5">
     <div class="scene-head">
-      <p class="scene-label" style="--c: var(--vini)">Cena 5 · Cronograma</p>
+      <p class="scene-label"><span class="num">05</span>Cronograma</p>
       <h2 id="c5">Até duas semanas a partir dos acessos e das mensagens</h2>
       <p class="read">Contado em dias de trabalho depois que chegam os acessos e as copies. Se o lançamento for antes disso, começo por carrinho abandonado e compra aprovada.</p>
     </div>
@@ -501,7 +500,7 @@ h3 { font-size: 1.55rem; line-height: 1; }
 
   <section class="scene" aria-labelledby="c6">
     <div class="scene-head">
-      <p class="scene-label" style="--c: var(--msg)">Cena 6 · Entrega</p>
+      <p class="scene-label"><span class="num">06</span>Entrega</p>
       <h2 id="c6">O que vocês recebem e o que eu preciso para começar</h2>
     </div>
     <div class="split">
@@ -532,7 +531,7 @@ h3 { font-size: 1.55rem; line-height: 1; }
 
   <section class="scene" aria-labelledby="c7">
     <div class="scene-head">
-      <p class="scene-label" style="--c: var(--cut)">Cena 7 · Investimento</p>
+      <p class="scene-label"><span class="num">07</span>Investimento</p>
       <h2 id="c7">Um valor fechado para a fase 1</h2>
     </div>
     <div class="final">
@@ -549,7 +548,7 @@ h3 { font-size: 1.55rem; line-height: 1; }
       <h3>Próximos passos</h3>
       <ol class="next">
         <li>Vocês me mandam os acessos, o número e as mensagens.</li>
-        <li>Eu confirmo a ferramenta com o suporte, e vocês assinam.</li>
+        <li>Vocês assinam o BotConversa Pro, e eu ligo os avisos do checkout.</li>
         <li>Em até duas semanas, os cinco produtos estão com a régua no ar.</li>
       </ol>
     </div>
@@ -558,11 +557,13 @@ h3 { font-size: 1.55rem; line-height: 1; }
   <footer class="credits">
     <dl>
       <div><dt>Proposta</dt><dd>Vinicius Gomes</dd></div>
+      <div><dt>WhatsApp</dt><dd><a href="https://wa.me/5561981739886">+55 (61) 98173-9886</a></dd></div>
+      <div><dt>E-mail</dt><dd><a href="mailto:vinicius08gomes@gmail.com">vinicius08gomes@gmail.com</a></dd></div>
       <div><dt>Para</dt><dd>DUO cose creative</dd></div>
       <div><dt>Data</dt><dd>13 de outubro de 2026</dd></div>
     </dl>
     <p class="fim">Fim</p>
-    <p class="fine">Os preços das ferramentas foram conferidos nos sites oficiais em 12/10/2026. O comportamento dos avisos segue a central de ajuda da The Members e é confirmado nos testes com compras de teste.</p>
+    <p class="fine">Os preços das ferramentas foram conferidos nos sites oficiais em 13/10/2026. O comportamento dos avisos segue a central de ajuda da The Members e é confirmado nos testes com compras de teste.</p>
   </footer>
 </main>
 
@@ -570,17 +571,11 @@ h3 { font-size: 1.55rem; line-height: 1; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
 (function () {
-  // Timecode do HUD: o progresso da página vira um "filme" de 3 minutos a 24 quadros.
-  var tcEl = document.getElementById("tc");
+  // Barra de progresso da leitura.
   var bar = document.getElementById("progress");
-  var FPS = 24, DUR = 180;
-  function pad(n) { return String(n).padStart(2, "0"); }
   function updateHud() {
     var max = document.documentElement.scrollHeight - window.innerHeight;
     var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-    var frames = Math.round(p * DUR * FPS);
-    var s = Math.floor(frames / FPS);
-    tcEl.textContent = pad(Math.floor(s / 3600)) + ":" + pad(Math.floor(s / 60) % 60) + ":" + pad(s % 60) + ":" + pad(frames % FPS);
     bar.style.transform = "scaleX(" + p + ")";
   }
   window.addEventListener("scroll", updateHud, { passive: true });
@@ -602,7 +597,7 @@ h3 { font-size: 1.55rem; line-height: 1; }
     var show = { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out" };
     var pop = { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(2)" };
 
-    gsap.set(beats, { opacity: 0.28 });
+    gsap.set(beats, { opacity: 0.32 });
     gsap.set(beats[0], { opacity: 1 });
     gsap.set(["#mk-out", "#mk-buy"], { autoAlpha: 0, scale: 0.3, rotation: 45 });
     gsap.set(["#mk-out-l", "#mk-buy-l", "#tag-cancel", "#clip-sched .strike"], { autoAlpha: 0 });
@@ -620,14 +615,14 @@ h3 { font-size: 1.55rem; line-height: 1; }
       .to("#chat-1", show, "b1")
       .to(ph, { left: "41.56%", duration: 3 })
       .addLabel("b2")
-      .to(beats[0], { opacity: 0.28, duration: 0.25 }, "b2")
+      .to(beats[0], { opacity: 0.32, duration: 0.25 }, "b2")
       .to(beats[1], { opacity: 1, duration: 0.25 }, "b2")
       .to("#clip-1", { autoAlpha: 1, scaleX: 1, duration: 0.4, ease: "power2.out" }, "b2")
       .to("#chat-2", show, "b2")
       .to("#clip-sched", { autoAlpha: 1, duration: 0.4 }, "b2+=.25")
       .to(ph, { left: "51.45%", duration: 1.3 })
       .addLabel("b3")
-      .to(beats[1], { opacity: 0.28, duration: 0.25 }, "b3")
+      .to(beats[1], { opacity: 0.32, duration: 0.25 }, "b3")
       .to(beats[2], { opacity: 1, duration: 0.25 }, "b3")
       .to("#mk-buy", pop, "b3")
       .to("#mk-buy-l", { autoAlpha: 1, duration: 0.3 }, "b3+=.1")
@@ -640,7 +635,7 @@ h3 { font-size: 1.55rem; line-height: 1; }
       .to("#chat-5", show, "b3+=.45")
       .to(ph, { left: "85%", duration: 2.6 })
       .addLabel("b4")
-      .to(beats[2], { opacity: 0.28, duration: 0.25 }, "b4")
+      .to(beats[2], { opacity: 0.32, duration: 0.25 }, "b4")
       .to(beats[3], { opacity: 1, duration: 0.25 }, "b4")
       .to(ph, { left: "100%", duration: 1 });
     return tl;
@@ -659,18 +654,15 @@ h3 { font-size: 1.55rem; line-height: 1; }
       splitWords(el);
     });
 
-    // Abertura: palavras sobem da máscara e a claquete bate.
+    // Abertura: as palavras sobem da máscara, depois entram o texto e a ficha.
     gsap.timeline({ defaults: { ease: "power3.out" } })
-      .set(".stick.top", { rotation: -9 }, 0)
       .from(".hero .w > span", { yPercent: 115, duration: 0.9, stagger: 0.035 }, 0)
-      .from("[data-hero-fade]", { autoAlpha: 0, y: 16, duration: 0.6, stagger: 0.1 }, "-=.6")
-      .to(".stick.top", { rotation: 0, duration: 0.26, ease: "power4.in" }, "+=.1")
-      .to(".slate", { y: 3, duration: 0.05, yoyo: true, repeat: 1, ease: "none" });
+      .from("[data-hero-fade]", { autoAlpha: 0, y: 16, duration: 0.6, stagger: 0.1 }, "-=.6");
 
     // Cena 1: no desktop a cena fica fixa e o scroll move o cursor; no celular ela toca sozinha ao aparecer.
     var tl = buildScene();
     if (desk) {
-      ScrollTrigger.create({ trigger: ".stage", start: "top top", end: "+=2400", pin: true, scrub: 0.8, animation: tl, anticipatePin: 1 });
+      ScrollTrigger.create({ trigger: ".stage", start: "top top", end: "+=1300", pin: true, scrub: 0.8, animation: tl, anticipatePin: 1 });
     } else {
       tl.pause();
       // No fim, todas as legendas voltam a ficar legíveis para quem lê no celular.
